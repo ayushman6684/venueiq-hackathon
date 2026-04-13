@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VenueIQ — Smart Stadium Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="src/styles/main.css"/>
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar Nav -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-mark">V</div>
+        <div class="logo-text">
+          <span class="logo-name">VenueIQ</span>
+          <span class="logo-sub">Stadium OS</span>
+        </div>
+      </div>
+      <ul class="nav-links">
+        <li class="nav-item active" data-page="dashboard" onclick="navigate(this,'dashboard')">
+          <span class="nav-icon">◈</span><span class="nav-label">Dashboard</span>
+        </li>
+        <li class="nav-item" data-page="crowd" onclick="navigate(this,'crowd')">
+          <span class="nav-icon">⊕</span><span class="nav-label">Crowd Flow</span>
+        </li>
+        <li class="nav-item" data-page="queues" onclick="navigate(this,'queues')">
+          <span class="nav-icon">≡</span><span class="nav-label">Queue Intel</span>
+        </li>
+        <li class="nav-item" data-page="alerts" onclick="navigate(this,'alerts')">
+          <span class="nav-icon">◉</span><span class="nav-label">Live Alerts</span>
+          <span class="badge">3</span>
+        </li>
+        <li class="nav-item" data-page="companion" onclick="navigate(this,'companion')">
+          <span class="nav-icon">✦</span><span class="nav-label">Fan Companion</span>
+        </li>
+        <li class="nav-item" data-page="concessions" onclick="navigate(this,'concessions')">
+          <span class="nav-icon">◫</span><span class="nav-label">Concessions</span>
+        </li>
+        <li class="nav-item" data-page="analytics" onclick="navigate(this,'analytics')">
+          <span class="nav-icon">▲</span><span class="nav-label">Analytics</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="event-card">
+          <div class="event-dot"></div>
+          <div class="event-info">
+            <div class="event-name">IPL 2025 Finals</div>
+            <div class="event-status">LIVE · Q3 · 63,400 fans</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+      <!-- Pages injected here by JS -->
+    </main>
+  </div>
+
+  <script src="src/utils/data.js"></script>
+  <script src="src/utils/charts.js"></script>
+  <script src="src/pages/dashboard.js"></script>
+  <script src="src/pages/crowd.js"></script>
+  <script src="src/pages/queues.js"></script>
+  <script src="src/pages/alerts.js"></script>
+  <script src="src/pages/companion.js"></script>
+  <script src="src/pages/concessions.js"></script>
+  <script src="src/pages/analytics.js"></script>
+  <script src="src/utils/router.js"></script>
+</body>
+</html>
