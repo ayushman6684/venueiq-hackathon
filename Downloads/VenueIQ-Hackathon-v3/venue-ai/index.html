@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="VenueIQ - AI-Powered Smart Stadium Experience Platform. Real-time crowd management, queue intelligence, fan companion, and incident coordination for large-scale sporting venues."/>
+  <meta name="keywords" content="stadium management, crowd control, queue intelligence, fan experience, smart stadium, AI, sports technology, venue management"/>
+  <meta name="author" content="VenueIQ Team"/>
+  <meta name="robots" content="index, follow"/>
+  <meta property="og:title" content="VenueIQ — Smart Stadium OS"/>
+  <meta property="og:description" content="AI-powered platform for real-time crowd management and seamless fan experience at large sporting events."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://ayushman6684.github.io/venueiq-hackathon/"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="VenueIQ — Smart Stadium OS"/>
+  <meta name="theme-color" content="#00e5a0"/>
+  <title>VenueIQ — Smart Stadium Experience</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      page_title: 'VenueIQ Dashboard',
+      page_location: window.location.href,
+      send_page_view: true
+    });
+    function trackEvent(category, action, label) {
+      gtag('event', action, {
+        event_category: category,
+        event_label: label,
+        value: 1
+      });
+    }
+  </script>
+
+  <!-- Google Maps API -->
+  <script>
+    function initGoogleMap() {
+      if (typeof google !== 'undefined' && document.getElementById('google-map-container')) {
+        const map = new google.maps.Map(document.getElementById('google-map-container'), {
+          center: { lat: 18.9388, lng: 72.8258 },
+          zoom: 16,
+          mapTypeId: 'satellite'
+        });
+        new google.maps.Marker({
+          position: { lat: 18.9388, lng: 72.8258 },
+          map: map,
+          title: 'Wankhede Stadium',
+          label: { text: 'VenueIQ', color: '#000', fontWeight: 'bold' }
+        });
+        new google.maps.Circle({
+          strokeColor: '#00e5a0',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#00e5a0',
+          fillOpacity: 0.15,
+          map: map,
+          center: { lat: 18.9388, lng: 72.8258 },
+          radius: 300
+        });
+      }
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initGoogleMap"></script>
+
+  <link rel="stylesheet" href="src/styles/main.css"/>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <div id="app" role="application" aria-label="VenueIQ Smart Stadium Dashboard">
+    <nav class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-logo" role="banner">
+        <div class="logo-mark" aria-hidden="true">V</div>
+        <div class="logo-text">
+          <span class="logo-name">VenueIQ</span>
+          <span class="logo-sub">Stadium OS</span>
+        </div>
+      </div>
+      <ul class="nav-links" role="menubar" aria-label="Main menu">
+        <li class="nav-item active" role="menuitem" tabindex="0" data-page="dashboard"
+            onclick="navigate(this,'dashboard')" onkeypress="if(event.key==='Enter')navigate(this,'dashboard')"
+            aria-label="Dashboard" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">◈</span><span class="nav-label">Dashboard</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="crowd"
+            onclick="navigate(this,'crowd')" onkeypress="if(event.key==='Enter')navigate(this,'crowd')"
+            aria-label="Crowd Flow">
+          <span class="nav-icon" aria-hidden="true">⊕</span><span class="nav-label">Crowd Flow</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="queues"
+            onclick="navigate(this,'queues')" onkeypress="if(event.key==='Enter')navigate(this,'queues')"
+            aria-label="Queue Intelligence">
+          <span class="nav-icon" aria-hidden="true">≡</span><span class="nav-label">Queue Intel</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="alerts"
+            onclick="navigate(this,'alerts')" onkeypress="if(event.key==='Enter')navigate(this,'alerts')"
+            aria-label="Live Alerts, 3 active incidents">
+          <span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">Live Alerts</span>
+          <span class="badge" aria-label="3 active alerts">3</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="companion"
+            onclick="navigate(this,'companion')" onkeypress="if(event.key==='Enter')navigate(this,'companion')"
+            aria-label="Fan Companion AI Assistant">
+          <span class="nav-icon" aria-hidden="true">✦</span><span class="nav-label">Fan Companion</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="concessions"
+            onclick="navigate(this,'concessions')" onkeypress="if(event.key==='Enter')navigate(this,'concessions')"
+            aria-label="Concessions Management">
+          <span class="nav-icon" aria-hidden="true">◫</span><span class="nav-label">Concessions</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="analytics"
+            onclick="navigate(this,'analytics')" onkeypress="if(event.key==='Enter')navigate(this,'analytics')"
+            aria-label="Analytics and Reports">
+          <span class="nav-icon" aria-hidden="true">▲</span><span class="nav-label">Analytics</span>
+        </li>
+        <li class="nav-item" role="menuitem" tabindex="0" data-page="map"
+            onclick="navigate(this,'map')" onkeypress="if(event.key==='Enter')navigate(this,'map')"
+            aria-label="Google Maps Venue View">
+          <span class="nav-icon" aria-hidden="true">📍</span><span class="nav-label">Venue Map</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer" role="status" aria-live="polite">
+        <div class="event-card" aria-label="Current live event: IPL 2025 Finals">
+          <div class="event-dot" aria-hidden="true"></div>
+          <div class="event-info">
+            <div class="event-name">IPL 2025 Finals</div>
+            <div class="event-status">LIVE · Q3 · 63,400 fans</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content" id="main-content" role="main" aria-label="Page content" tabindex="-1"></main>
+  </div>
+
+  <script src="src/utils/data.js"></script>
+  <script src="src/utils/charts.js"></script>
+  <script src="src/pages/dashboard.js"></script>
+  <script src="src/pages/crowd.js"></script>
+  <script src="src/pages/queues.js"></script>
+  <script src="src/pages/alerts.js"></script>
+  <script src="src/pages/companion.js"></script>
+  <script src="src/pages/concessions.js"></script>
+  <script src="src/pages/analytics.js"></script>
+  <script src="src/pages/map.js"></script>
+  <script src="src/utils/router.js"></script>
+</body>
+</html>
