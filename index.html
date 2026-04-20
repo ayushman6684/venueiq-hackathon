@@ -2,67 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VenueIQ — Smart Stadium Experience</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="src/styles/main.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="VenueIQ - AI-Powered Smart Stadium Experience Platform. Real-time crowd management, queue intelligence, and fan companion for large-scale sporting venues." />
+  <meta name="keywords" content="stadium management, crowd control, queue intelligence, fan experience, smart venue, AI sports" />
+  <meta name="author" content="VenueIQ Team" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="VenueIQ – Smart Stadium OS" />
+  <meta property="og:description" content="AI-powered platform for real-time crowd management and seamless fan experience at large-scale sporting venues." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ayushman6684.github.io/venueiq-hackathon/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="VenueIQ – Smart Stadium OS" />
+  <meta name="theme-color" content="#0a0f1e" />
+  <title>VenueIQ – Smart Stadium Experience Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/styles/main.css" />
+
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VENUEIQ2024"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VENUEIQ2024', {
+      page_title: 'VenueIQ Dashboard',
+      page_location: window.location.href,
+      send_page_view: true
+    });
+    // Track navigation events
+    function trackNav(page) {
+      gtag('event', 'page_view', { page_title: page, page_location: window.location.href + '#' + page });
+      gtag('event', 'navigation', { event_category: 'UI', event_label: page });
+    }
+    // Track feature usage
+    function trackFeature(feature, action) {
+      gtag('event', action || 'click', { event_category: 'Feature', event_label: feature });
+    }
+  </script>
 </head>
 <body>
-  <div id="app">
-    <!-- Sidebar Nav -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-logo">
-        <div class="logo-mark">V</div>
-        <div class="logo-text">
-          <span class="logo-name">VenueIQ</span>
-          <span class="logo-sub">Stadium OS</span>
+  <!-- Skip navigation for accessibility -->
+  <a href="#main-content" class="skip-link" tabindex="0">Skip to main content</a>
+
+  <div class="app-shell" role="application" aria-label="VenueIQ Stadium Management Platform">
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand" role="banner">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="14" stroke="#00d4ff" stroke-width="2"/>
+            <path d="M8 20 Q16 8 24 20" stroke="#00d4ff" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="16" r="3" fill="#00d4ff"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">VenueIQ</span>
+          <span class="brand-tagline">Smart Stadium OS</span>
         </div>
       </div>
-      <ul class="nav-links">
-        <li class="nav-item active" data-page="dashboard" onclick="navigate(this,'dashboard')">
-          <span class="nav-icon">◈</span><span class="nav-label">Dashboard</span>
+
+      <ul class="nav-list" role="list">
+        <li role="listitem">
+          <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard'); trackNav('dashboard')" aria-current="page" aria-label="Command Center Dashboard">
+            <span class="nav-icon" aria-hidden="true">⬡</span>
+            <span class="nav-label">Command Center</span>
+            <span class="nav-badge live" aria-label="Live data">LIVE</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="crowd" onclick="navigate(this,'crowd')">
-          <span class="nav-icon">⊕</span><span class="nav-label">Crowd Flow</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="crowd" onclick="navigate('crowd'); trackNav('crowd')" aria-label="Crowd Flow Management">
+            <span class="nav-icon" aria-hidden="true">◈</span>
+            <span class="nav-label">Crowd Flow</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="queues" onclick="navigate(this,'queues')">
-          <span class="nav-icon">≡</span><span class="nav-label">Queue Intel</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="queues" onclick="navigate('queues'); trackNav('queues')" aria-label="Queue Intelligence">
+            <span class="nav-icon" aria-hidden="true">◎</span>
+            <span class="nav-label">Queue Intel</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="alerts" onclick="navigate(this,'alerts')">
-          <span class="nav-icon">◉</span><span class="nav-label">Live Alerts</span>
-          <span class="badge">3</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="alerts" onclick="navigate('alerts'); trackNav('alerts')" aria-label="Live Alerts and Incidents">
+            <span class="nav-icon" aria-hidden="true">◉</span>
+            <span class="nav-label">Live Alerts</span>
+            <span class="nav-badge urgent" id="alert-count" aria-label="3 active alerts" aria-live="polite">3</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="companion" onclick="navigate(this,'companion')">
-          <span class="nav-icon">✦</span><span class="nav-label">Fan Companion</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="companion" onclick="navigate('companion'); trackNav('companion')" aria-label="AI Fan Companion Chatbot">
+            <span class="nav-icon" aria-hidden="true">◌</span>
+            <span class="nav-label">Fan Companion</span>
+            <span class="nav-badge ai" aria-label="AI powered">AI</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="concessions" onclick="navigate(this,'concessions')">
-          <span class="nav-icon">◫</span><span class="nav-label">Concessions</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="concessions" onclick="navigate('concessions'); trackNav('concessions')" aria-label="Concessions Management">
+            <span class="nav-icon" aria-hidden="true">◇</span>
+            <span class="nav-label">Concessions</span>
+          </button>
         </li>
-        <li class="nav-item" data-page="analytics" onclick="navigate(this,'analytics')">
-          <span class="nav-icon">▲</span><span class="nav-label">Analytics</span>
+        <li role="listitem">
+          <button class="nav-item" data-page="analytics" onclick="navigate('analytics'); trackNav('analytics')" aria-label="Analytics and Insights">
+            <span class="nav-icon" aria-hidden="true">◈</span>
+            <span class="nav-label">Analytics</span>
+          </button>
+        </li>
+        <li role="listitem">
+          <button class="nav-item" data-page="map" onclick="navigate('map'); trackNav('map')" aria-label="Google Maps Venue View">
+            <span class="nav-icon" aria-hidden="true">◫</span>
+            <span class="nav-label">Venue Map</span>
+            <span class="nav-badge google" aria-label="Powered by Google">G</span>
+          </button>
         </li>
       </ul>
-      <div class="sidebar-footer">
-        <div class="event-card">
-          <div class="event-dot"></div>
-          <div class="event-info">
-            <div class="event-name">IPL 2025 Finals</div>
-            <div class="event-status">LIVE · Q3 · 63,400 fans</div>
-          </div>
+
+      <div class="sidebar-footer" role="contentinfo">
+        <div class="venue-status" aria-live="polite" aria-atomic="true">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="status-text">Event Active</span>
+        </div>
+        <div class="capacity-mini" aria-label="Stadium capacity status">
+          <span id="cap-mini">73,240</span>
+          <span class="cap-label"> / 80,000</span>
         </div>
       </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content" id="main-content">
-      <!-- Pages injected here by JS -->
+    <main id="main-content" class="main-content" role="main" tabindex="-1">
+      <div id="page-container" aria-live="polite" aria-atomic="false"></div>
     </main>
+
   </div>
 
   <script src="src/utils/data.js"></script>
   <script src="src/utils/charts.js"></script>
+  <script src="src/utils/router.js"></script>
   <script src="src/pages/dashboard.js"></script>
   <script src="src/pages/crowd.js"></script>
   <script src="src/pages/queues.js"></script>
@@ -70,6 +148,26 @@
   <script src="src/pages/companion.js"></script>
   <script src="src/pages/concessions.js"></script>
   <script src="src/pages/analytics.js"></script>
-  <script src="src/utils/router.js"></script>
+  <script src="src/pages/map.js"></script>
+  <script>
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+      navigate('dashboard');
+      // Cache DOM references for performance
+      const capMini = document.getElementById('cap-mini');
+      setInterval(() => {
+        const cap = 73000 + Math.floor(Math.random() * 500);
+        if (capMini) capMini.textContent = cap.toLocaleString();
+      }, 5000);
+    });
+
+    // Keyboard navigation support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') document.body.classList.add('keyboard-nav');
+    });
+    document.addEventListener('mousedown', () => {
+      document.body.classList.remove('keyboard-nav');
+    });
+  </script>
 </body>
 </html>

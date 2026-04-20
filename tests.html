@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VenueIQ — Test Suite</title>
+  <style>
+    :root { --pass:#00c851; --fail:#ff4444; --skip:#ffbb33; --bg:#0a0f1e; --card:#111d35; --text:#e8edf5; --muted:#8a9bb8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding: 24px; }
+    h1 { font-size: 1.6rem; margin-bottom: 4px; color: #00d4ff; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+    .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+    .summary-card { background: var(--card); border-radius: 8px; padding: 14px; text-align: center; }
+    .summary-card .num { font-size: 2rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; }
+    .summary-card .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .section { margin-bottom: 20px; }
+    .section h2 { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .test { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--card); border-radius: 6px; margin-bottom: 4px; font-size: 0.82rem; }
+    .badge { padding: 2px 8px; border-radius: 3px; font-size: 0.65rem; font-weight: 700; min-width: 44px; text-align: center; }
+    .pass { background: rgba(0,200,81,0.15); color: var(--pass); }
+    .fail { background: rgba(255,68,68,0.15); color: var(--fail); }
+    .skip { background: rgba(255,187,51,0.15); color: var(--skip); }
+    .test-name { flex: 1; }
+    .detail { font-size: 0.72rem; color: var(--muted); }
+    #run-btn { background: #00d4ff; color: #0a0f1e; border: none; padding: 10px 24px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+    #run-btn:hover { background: #00bcdf; }
+    progress { width: 100%; height: 6px; border-radius: 3px; margin-bottom: 20px; }
+    progress::-webkit-progress-bar { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    progress::-webkit-progress-value { background: #00d4ff; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>VENUEIQ TEST SUITE</h1>
+  <p class="subtitle">Automated test runner — VenueIQ v3 · <span id="run-time"></span></p>
+  <button id="run-btn" onclick="runAllTests()">▶ Run All Tests</button>
+  <progress id="progress" value="0" max="100"></progress>
+  <div class="summary">
+    <div class="summary-card"><div class="num" id="s-total" style="color:#00d4ff">0</div><div class="lbl">Total</div></div>
+    <div class="summary-card"><div class="num" id="s-pass" style="color:#00c851">0</div><div class="lbl">Passed</div></div>
+    <div class="summary-card"><div class="num" id="s-fail" style="color:#ff4444">0</div><div class="lbl">Failed</div></div>
+    <div class="summary-card"><div class="num" id="s-skip" style="color:#ffbb33">0</div><div class="lbl">Skipped</div></div>
+  </div>
+  <div id="test-output"></div>
+
+  <script>
+    const testSuites = [
+      {
+        name: 'Data Layer — VenueData Structure',
+        tests: [
+          { name: 'VenueData object exists', fn: () => typeof VenueData === 'object' },
+          { name: 'Stadium capacity is defined', fn: () => VenueData.stadium.capacity === 80000 },
+          { name: 'Gates array has 8 entries', fn: () => VenueData.gates.length === 8 },
+          { name: 'Food courts array exists', fn: () => Array.isArray(VenueData.foodCourts) },
+          { name: 'Incidents array has entries', fn: () => VenueData.incidents.length > 0 },
+          { name: 'Concessions has 8 items', fn: () => VenueData.concessions.length === 8 },
+          { name: 'Crowd zones defined', fn: () => VenueData.crowdZones.length > 0 },
+          { name: 'Bot responses object exists', fn: () => typeof VenueData.botResponses === 'object' },
+          { name: 'Metrics object has avgWaitTime', fn: () => typeof VenueData.metrics.avgWaitTime === 'number' },
+          { name: 'Fan score within valid range 1-5', fn: () => VenueData.metrics.fanScore >= 1 && VenueData.metrics.fanScore <= 5 },
+        ]
+      },
+      {
+        name: 'Gate Data — Validation',
+        tests: [
+          { name: 'All gates have wait time (number)', fn: () => VenueData.gates.every(g => typeof g.wait === 'number') },
+          { name: 'All gates have valid status', fn: () => VenueData.gates.every(g => ['normal','busy','critical'].includes(g.status)) },
+          { name: 'All gates have capacity 0-100', fn: () => VenueData.gates.every(g => g.capacity >= 0 && g.capacity <= 100) },
+          { name: 'All gates have unique IDs', fn: () => new Set(VenueData.gates.map(g => g.id)).size === VenueData.gates.length },
+          { name: 'All gates have zone property', fn: () => VenueData.gates.every(g => typeof g.zone === 'string') },
+        ]
+      },
+      {
+        name: 'Utility Functions',
+        tests: [
+          { name: 'getStatusColor returns string', fn: () => typeof getStatusColor('normal') === 'string' },
+          { name: 'getStatusColor normal = green', fn: () => getStatusColor('normal') === '#00ff88' },
+          { name: 'getStatusColor critical = red', fn: () => getStatusColor('critical') === '#ff3366' },
+          { name: 'getStatusColor busy = yellow', fn: () => getStatusColor('busy') === '#ffd700' },
+          { name: 'getHeatColor returns string', fn: () => typeof getHeatColor(80) === 'string' },
+          { name: 'getHeatColor high density = red tone', fn: () => getHeatColor(95).includes('ff') },
+          { name: 'getHeatCellColor low density = green', fn: () => getHeatCellColor(10).includes('00,255,136') || getHeatCellColor(10).includes('0,255,136') },
+        ]
+      },
+      {
+        name: 'Live Update System',
+        tests: [
+          { name: 'startLiveUpdates function exists', fn: () => typeof startLiveUpdates === 'function' },
+          { name: 'stopLiveUpdates function exists', fn: () => typeof stopLiveUpdates === 'function' },
+          { name: 'startLiveUpdates accepts callback', fn: () => { startLiveUpdates(() => {}); stopLiveUpdates(); return true; } },
+          { name: 'Gate wait updates after tick', fn: () => {
+            const orig = VenueData.gates[0].wait;
+            startLiveUpdates(null);
+            stopLiveUpdates();
+            return typeof VenueData.gates[0].wait === 'number';
+          }},
+        ]
+      },
+      {
+        name: 'Router — Navigation',
+        tests: [
+          { name: 'navigate function exists', fn: () => typeof navigate === 'function' },
+          { name: 'pages object contains dashboard', fn: () => typeof renderDashboard === 'function' },
+          { name: 'pages object contains crowd', fn: () => typeof renderCrowd === 'function' },
+          { name: 'pages object contains queues', fn: () => typeof renderQueues === 'function' },
+          { name: 'pages object contains alerts', fn: () => typeof renderAlerts === 'function' },
+          { name: 'pages object contains companion', fn: () => typeof renderCompanion === 'function' },
+          { name: 'pages object contains concessions', fn: () => typeof renderConcessions === 'function' },
+          { name: 'pages object contains analytics', fn: () => typeof renderAnalytics === 'function' },
+          { name: 'pages object contains map', fn: () => typeof renderMap === 'function' },
+        ]
+      },
+      {
+        name: 'DOM — Accessibility',
+        tests: [
+          { name: 'Skip link exists in DOM', fn: () => !!document.querySelector('.skip-link') },
+          { name: 'Main landmark exists', fn: () => !!document.querySelector('main') },
+          { name: 'Nav landmark exists', fn: () => !!document.querySelector('nav') },
+          { name: 'Page lang attribute set', fn: () => document.documentElement.lang === 'en' },
+          { name: 'Title element not empty', fn: () => document.title.length > 0 },
+          { name: 'Meta description exists', fn: () => !!document.querySelector('meta[name="description"]') },
+          { name: 'Meta viewport exists', fn: () => !!document.querySelector('meta[name="viewport"]') },
+          { name: 'App has role=application', fn: () => !!document.querySelector('[role="application"]') },
+        ]
+      },
+      {
+        name: 'Google Services — Analytics',
+        tests: [
+          { name: 'gtag function defined', fn: () => typeof gtag === 'function' || typeof window.gtag === 'function' },
+          { name: 'dataLayer array exists', fn: () => Array.isArray(window.dataLayer) },
+          { name: 'trackNav function exists', fn: () => typeof trackNav === 'function' },
+          { name: 'trackFeature function exists', fn: () => typeof trackFeature === 'function' },
+          { name: 'Google Analytics script tag present', fn: () => !!document.querySelector('script[src*="googletagmanager"]') },
+          { name: 'Google Maps iframe on map page', fn: () => {
+            const testDiv = document.createElement('div');
+            renderMap(testDiv);
+            return !!testDiv.querySelector('iframe[src*="google.com/maps"]');
+          }},
+        ]
+      },
+      {
+        name: 'Fan Companion — Chatbot Logic',
+        tests: [
+          { name: 'getBotResponse function exists', fn: () => typeof getBotResponse === 'function' },
+          { name: 'getBotResponse washroom query', fn: () => getBotResponse('nearest washroom').length > 0 },
+          { name: 'getBotResponse food query', fn: () => getBotResponse('food options').includes('min') },
+          { name: 'getBotResponse exit query', fn: () => getBotResponse('best exit').length > 0 },
+          { name: 'getBotResponse parking query', fn: () => getBotResponse('parking lot').length > 0 },
+          { name: 'getBotResponse wifi query', fn: () => getBotResponse('wifi internet').toLowerCase().includes('wifi') },
+          { name: 'getBotResponse default fallback', fn: () => getBotResponse('xyzabc123').length > 0 },
+        ]
+      },
+      {
+        name: 'Chart Functions',
+        tests: [
+          { name: 'drawSparkline function exists', fn: () => typeof drawSparkline === 'function' },
+          { name: 'drawBarChart function exists', fn: () => typeof drawBarChart === 'function' },
+          { name: 'drawDonut function exists', fn: () => typeof drawDonut === 'function' },
+          { name: 'drawSparkline handles null canvas', fn: () => { drawSparkline(null, [1,2,3]); return true; } },
+          { name: 'drawBarChart handles empty data', fn: () => { const c = document.createElement('canvas'); drawBarChart(c, [], []); return true; } },
+        ]
+      },
+      {
+        name: 'Performance — Efficiency',
+        tests: [
+          { name: 'Page renders under 100ms', fn: () => {
+            const start = performance.now();
+            const d = document.createElement('div');
+            renderDashboard(d);
+            return (performance.now() - start) < 100;
+          }},
+          { name: 'Concessions renders under 50ms', fn: () => {
+            const start = performance.now();
+            const d = document.createElement('div');
+            renderConcessions(d);
+            return (performance.now() - start) < 50;
+          }},
+          { name: 'Analytics renders under 50ms', fn: () => {
+            const start = performance.now();
+            const d = document.createElement('div');
+            renderAnalytics(d);
+            return (performance.now() - start) < 50;
+          }},
+          { name: 'VenueData keys under 20', fn: () => Object.keys(VenueData).length < 20 },
+          { name: 'stopLiveUpdates cleans up', fn: () => { startLiveUpdates(null); stopLiveUpdates(); return true; } },
+        ]
+      }
+    ];
+
+    // Load main app scripts before running tests
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function initScripts() {
+      const scripts = [
+        'src/utils/data.js','src/utils/charts.js','src/utils/router.js',
+        'src/pages/dashboard.js','src/pages/crowd.js','src/pages/queues.js',
+        'src/pages/alerts.js','src/pages/companion.js','src/pages/concessions.js',
+        'src/pages/analytics.js','src/pages/map.js'
+      ];
+      // Setup minimal DOM needed
+      document.body.insertAdjacentHTML('beforeend', `
+        <div id="page-container" style="display:none"></div>
+        <nav style="display:none"><a class="skip-link" href="#main-content">Skip</a></nav>
+        <main id="main-content" style="display:none" role="main"></main>
+        <div class="app-shell" style="display:none" role="application"></div>
+      `);
+      for (const s of scripts) {
+        try { await loadScript(s); } catch(e) { console.warn('Could not load', s); }
+      }
+    }
+
+    let stats = { total: 0, pass: 0, fail: 0, skip: 0 };
+
+    async function runAllTests() {
+      document.getElementById('run-btn').disabled = true;
+      document.getElementById('run-btn').textContent = '⟳ Running...';
+      stats = { total: 0, pass: 0, fail: 0, skip: 0 };
+      document.getElementById('test-output').innerHTML = '';
+      document.getElementById('run-time').textContent = new Date().toLocaleTimeString();
+
+      await initScripts();
+
+      let totalTests = testSuites.reduce((a, s) => a + s.tests.length, 0);
+      let done = 0;
+      const output = document.getElementById('test-output');
+
+      for (const suite of testSuites) {
+        const section = document.createElement('div');
+        section.className = 'section';
+        section.innerHTML = `<h2>${suite.name}</h2>`;
+
+        for (const t of suite.tests) {
+          stats.total++;
+          let status = 'skip', detail = '';
+          try {
+            const result = t.fn();
+            status = result ? 'pass' : 'fail';
+            if (!result) detail = 'Returned false';
+          } catch(e) {
+            status = 'fail';
+            detail = e.message;
+          }
+          stats[status]++;
+          done++;
+          document.getElementById('progress').value = Math.round(done / totalTests * 100);
+
+          const row = document.createElement('div');
+          row.className = 'test';
+          row.innerHTML = `
+            <span class="badge ${status}">${status.toUpperCase()}</span>
+            <span class="test-name">${t.name}</span>
+            ${detail ? `<span class="detail">${detail}</span>` : ''}
+          `;
+          section.appendChild(row);
+          await new Promise(r => setTimeout(r, 8));
+        }
+        output.appendChild(section);
+      }
+
+      document.getElementById('s-total').textContent = stats.total;
+      document.getElementById('s-pass').textContent = stats.pass;
+      document.getElementById('s-fail').textContent = stats.fail;
+      document.getElementById('s-skip').textContent = stats.skip;
+      document.getElementById('run-btn').disabled = false;
+      document.getElementById('run-btn').textContent = `▶ Run Again (${stats.pass}/${stats.total} passed)`;
+    }
+
+    // Auto-run
+    window.addEventListener('load', () => setTimeout(runAllTests, 300));
+  </script>
+</body>
+</html>

@@ -1,115 +1,128 @@
-// ─── Queue Intelligence Page ───────────────────────────────────
-function renderQueues() {
-  return `
-<div class="page-header">
-  <div>
-    <div class="page-title">QUEUE INTEL</div>
-    <div class="page-sub">Real-time wait time monitoring across all entry & service points</div>
-  </div>
-  <div class="header-actions">
-    <div class="live-chip"><div class="live-dot"></div> LIVE</div>
-  </div>
-</div>
-
-<div class="page-body">
-  <div class="grid-4" id="queue-metrics">
-    ${[
-      { label: 'Gates Open', value: '12/14', color: '#00e5a0' },
-      { label: 'Avg Wait', value: DATA.metrics.avgWait.value.toFixed(1)+' min', color: '#ffd166' },
-      { label: 'Peak Queue', value: 'Gate D', color: '#ff4d6d' },
-      { label: 'Total Queuing', value: DATA.queues.reduce((s,q)=>s+q.length,0)+' pax', color: '#4ea8ff' },
-    ].map(m=>`
-    <div class="metric-card" style="--accent-color:${m.color}">
-      <div class="metric-label">${m.label}</div>
-      <div class="metric-value" style="font-size:28px">${m.value}</div>
-    </div>`).join('')}
-  </div>
-
-  <div class="grid-2">
-    <!-- Queue Table -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">All Queue Points</span>
-        <span style="font-size:12px;color:var(--text-muted)">Auto-updates every 4s</span>
+// VenueIQ v3 - Queue Intelligence
+function renderQueues(container) {
+  container.innerHTML = `
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">QUEUE INTEL</h1>
+        <p class="page-subtitle">Real-time wait time monitoring across all points</p>
       </div>
-      <div class="card-body" id="queue-table-body">
-        ${renderQueueTable()}
-      </div>
+      <span class="badge badge-green" aria-label="Live queue data">● LIVE DATA</span>
     </div>
 
-    <!-- Queue Viz -->
-    <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="metrics-grid">
+      <article class="metric-card" style="--accent-color:#00ff88">
+        <div class="metric-label">Avg Gate Wait</div>
+        <div class="metric-value" id="q-avg-gate">5.4<small style="font-size:1rem">m</small></div>
+        <div class="metric-delta up">▼ -0.8m vs 30min ago</div>
+      </article>
+      <article class="metric-card" style="--accent-color:#ff3366">
+        <div class="metric-label">Critical Queues</div>
+        <div class="metric-value" id="q-critical">2</div>
+        <div class="metric-delta down">▲ Need attention</div>
+      </article>
+      <article class="metric-card" style="--accent-color:#ffd700">
+        <div class="metric-label">Avg Food Wait</div>
+        <div class="metric-value">6.8<small style="font-size:1rem">m</small></div>
+        <div class="metric-delta down">▲ +2m halftime soon</div>
+      </article>
+      <article class="metric-card" style="--accent-color:#00d4ff">
+        <div class="metric-label">People Rerouted</div>
+        <div class="metric-value">1,247</div>
+        <div class="metric-delta up">▲ AI saved ~8min avg</div>
+      </article>
+    </div>
+
+    <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Wait Time Distribution</span>
+          <h2 class="card-title">Entry Gates</h2>
+          <button class="btn btn-primary" style="padding:4px 12px;font-size:0.72rem" onclick="rerouteAll()" aria-label="Activate AI rerouting for all gates">AI Reroute All</button>
         </div>
-        <div class="card-body">
-          <canvas id="queue-bar" width="400" height="100" style="width:100%;height:100px"></canvas>
-          <div style="display:flex;justify-content:space-around;margin-top:6px">
-            ${DATA.queues.map(q=>`<div style="font-size:9px;color:var(--text-muted);text-align:center">${q.gate.replace('Gate ','G')}</div>`).join('')}
-          </div>
-        </div>
+        <table class="data-table" role="table" aria-label="Gate wait times">
+          <thead>
+            <tr>
+              <th scope="col">Gate</th>
+              <th scope="col">Wait</th>
+              <th scope="col">Load</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="gate-table">
+          </tbody>
+        </table>
       </div>
-
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Smart Routing Suggestions</span>
-          <span class="tag tag-green">AI</span>
+          <h2 class="card-title">Food Courts</h2>
         </div>
-        <div class="card-body">
-          <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:var(--radius);padding:12px;margin-bottom:10px">
-            <div style="font-size:12px;font-weight:500;margin-bottom:4px">Fan in South Stand → Food</div>
-            <div style="font-size:12px;color:var(--text-muted)">Recommended: <strong style="color:var(--accent)">Stand 3A</strong> (2.1 min wait) instead of FC1 (7.5 min wait). Save 5.4 min.</div>
-          </div>
-          <div style="background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.15);border-radius:var(--radius);padding:12px;margin-bottom:10px">
-            <div style="font-size:12px;font-weight:500;margin-bottom:4px">Exit Route — End of Match</div>
-            <div style="font-size:12px;color:var(--text-muted)">Recommend <strong style="color:var(--accent3)">Gate A & C</strong> for North fans. Gate D at capacity.</div>
-          </div>
-          <div style="background:rgba(78,168,255,0.06);border:1px solid rgba(78,168,255,0.15);border-radius:var(--radius);padding:12px">
-            <div style="font-size:12px;font-weight:500;margin-bottom:4px">Merchandise Rush Expected</div>
-            <div style="font-size:12px;color:var(--text-muted)">Open additional counter at Stand M2. Current queue: 180 pax, 9.2 min wait.</div>
-          </div>
-        </div>
+        <table class="data-table" role="table" aria-label="Food court wait times">
+          <thead>
+            <tr>
+              <th scope="col">Location</th>
+              <th scope="col">Wait</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${VenueData.foodCourts.map(f => `
+              <tr>
+                <td style="font-size:0.78rem">${f.name}</td>
+                <td style="font-family:var(--font-mono);color:${f.wait>10?'var(--accent-red)':f.wait>6?'var(--accent-yellow)':'var(--accent-green)'}" aria-label="${f.wait} minute wait">${f.wait}m</td>
+                <td><span class="badge ${f.status==='critical'?'badge-red':f.status==='busy'?'badge-orange':'badge-green'}">${f.status.toUpperCase()}</span></td>
+                <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:0.68rem" aria-label="Manage ${f.name}">Manage</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
-</div>`;
-}
 
-function renderQueueTable() {
-  return DATA.queues.map(q => `
-  <div class="queue-item">
-    <div>
-      <div class="queue-name">${q.gate} <span class="status-dot ${q.alert ? 'red' : q.trend==='up' ? 'yellow' : 'green'}" style="margin-left:6px"></span></div>
-      <div class="queue-sub">${q.location}</div>
-    </div>
-    <div class="queue-wait">${q.wait.toFixed(1)} min</div>
-    <div>
-      <div class="progress-bar" style="width:80px">
-        <div class="progress-fill" style="width:${Math.min(100,q.length/2)}%;--fill-color:${q.alert ? '#ff4d6d' : q.wait > 4 ? '#ffd166' : '#00e5a0'}"></div>
+    <div class="padded">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Wait Time History (Last 60 min)</h2>
+          <span class="badge badge-cyan">TREND ANALYSIS</span>
+        </div>
+        <canvas id="wait-history" height="100" aria-label="Wait time trends over last 60 minutes"></canvas>
       </div>
-      <div style="font-size:10px;color:var(--text-muted);margin-top:2px;text-align:center">${q.length} pax</div>
     </div>
-  </div>`).join('');
+
+    <div role="status" id="reroute-msg" aria-live="polite" style="position:fixed;bottom:20px;right:20px;display:none" class="badge badge-green">✓ Rerouting activated</div>
+  `;
+
+  renderGateTable();
+  setTimeout(() => {
+    drawBarChart(document.getElementById('wait-history'),
+      ['5m','10m','15m','20m','25m','30m','35m','40m','45m','50m','55m','60m'],
+      [8,9,7,8,6,7,5,6,5,4,5,4], '#00d4ff');
+  }, 50);
+
+  startLiveUpdates(() => renderGateTable());
 }
 
-function initQueues() {
-  // Bar chart
-  const bc = document.getElementById('queue-bar');
-  if (bc) {
-    bc.width = (bc.offsetWidth || 400) * (window.devicePixelRatio || 1);
-    bc.height = 100 * (window.devicePixelRatio || 1);
-    const colors = DATA.queues.map(q => q.alert ? 'rgba(255,77,109,0.6)' : q.wait > 4 ? 'rgba(255,209,102,0.6)' : 'rgba(0,229,160,0.4)');
-    drawBarChart(bc, DATA.queues.map(q => ({ v: q.wait, label: '' })), colors);
+function renderGateTable() {
+  const tbody = document.getElementById('gate-table');
+  if (!tbody) return;
+  tbody.innerHTML = VenueData.gates.map(g => `
+    <tr>
+      <td style="font-size:0.78rem;font-weight:500">${g.name}</td>
+      <td style="font-family:var(--font-mono);color:${getStatusColor(g.status)}" aria-label="${g.wait} minute wait">${g.wait}m</td>
+      <td>
+        <div class="progress-bar" style="width:60px" role="progressbar" aria-valuenow="${g.capacity}" aria-valuemin="0" aria-valuemax="100" aria-label="${g.capacity}% capacity">
+          <div class="progress-fill" style="width:${g.capacity}%;background:${getStatusColor(g.status)}"></div>
+        </div>
+      </td>
+      <td><span class="badge ${g.status==='critical'?'badge-red':g.status==='busy'?'badge-orange':'badge-green'}">${g.status.toUpperCase()}</span></td>
+    </tr>
+  `).join('');
+}
+
+function rerouteAll() {
+  trackFeature('ai-reroute', 'activate');
+  const msg = document.getElementById('reroute-msg');
+  if (msg) {
+    msg.style.display = 'inline-flex';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
   }
-
-  // Live update
-  window._queueInterval = setInterval(() => {
-    const tbody = document.getElementById('queue-table-body');
-    if (tbody) tbody.innerHTML = renderQueueTable();
-    if (bc) {
-      const colors = DATA.queues.map(q => q.alert ? 'rgba(255,77,109,0.6)' : q.wait > 4 ? 'rgba(255,209,102,0.6)' : 'rgba(0,229,160,0.4)');
-      drawBarChart(bc, DATA.queues.map(q => ({ v: q.wait, label: '' })), colors);
-    }
-  }, 4000);
 }

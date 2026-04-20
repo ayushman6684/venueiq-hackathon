@@ -1,161 +1,131 @@
-// ─── Fan Companion Page ───────────────────────────────────────
-function renderCompanion() {
-  return `
-<div class="page-header">
-  <div>
-    <div class="page-title">FAN COMPANION</div>
-    <div class="page-sub">AI-powered personal assistant for every attendee · Mobile-first</div>
-  </div>
-  <div class="header-actions">
-    <div class="live-chip"><div class="live-dot"></div> LIVE</div>
-    <button class="btn btn-ghost">Preview App</button>
-  </div>
-</div>
-
-<div class="page-body">
-  <div class="grid-2" style="grid-template-columns:1fr 1.5fr">
-    <!-- Phone mockup -->
-    <div class="card">
-      <div class="card-header"><span class="card-title">Fan App — My Match</span></div>
-      <div class="card-body">
-        <div class="companion-phone">
-          <!-- Event header -->
-          <div class="companion-header">
-            <div style="font-size:12px;opacity:0.7;margin-bottom:2px">🏏 IPL FINALS · LIVE</div>
-            <div style="font-size:15px">MI vs CSK · 18.2 ov · 156/4</div>
-            <div style="font-size:11px;opacity:0.7;margin-top:4px">Seat: Block N12 · Row G · Seat 24</div>
-          </div>
-
-          <!-- Quick Actions -->
-          <div class="quick-action-grid">
-            <div class="quick-action" onclick="fanAction('food')">
-              <div class="quick-action-icon">🍔</div>
-              <div style="font-size:12px;font-weight:500">Order Food</div>
-              <div class="quick-action-label">2.1 min nearest</div>
-            </div>
-            <div class="quick-action" onclick="fanAction('route')">
-              <div class="quick-action-icon">🗺️</div>
-              <div style="font-size:12px;font-weight:500">Best Route</div>
-              <div class="quick-action-label">Exit guidance</div>
-            </div>
-            <div class="quick-action" onclick="fanAction('toilet')">
-              <div class="quick-action-icon">🚻</div>
-              <div style="font-size:12px;font-weight:500">Washrooms</div>
-              <div class="quick-action-label">0 min wait</div>
-            </div>
-            <div class="quick-action" onclick="fanAction('merch')">
-              <div class="quick-action-icon">👕</div>
-              <div style="font-size:12px;font-weight:500">Merchandise</div>
-              <div class="quick-action-label">Stand 4B</div>
-            </div>
-          </div>
-
-          <!-- AI Assistant -->
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px">
-            <div style="font-size:10px;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;font-weight:500">✦ VENUE AI</div>
-            <div id="companion-chat">
-              <div class="chat-msg ai">
-                <div class="chat-bubble">Hey! Halftime is in <strong>8 min</strong>. I'd head to Food Court 2 now — only 3 min wait vs 8 min after break. Want me to pre-order? 🍿</div>
-              </div>
-            </div>
-            <div class="chat-input-row">
-              <input class="chat-input" id="fan-input" placeholder="Ask me anything..." onkeypress="fanChat(event)"/>
-              <button class="btn btn-accent" style="padding:8px 12px" onclick="fanChatSend()">→</button>
-            </div>
-          </div>
-        </div>
+// VenueIQ v3 - Fan Companion
+function renderCompanion(container) {
+  container.innerHTML = `
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">FAN COMPANION</h1>
+        <p class="page-subtitle">AI-powered assistant for every fan — available 24/7</p>
       </div>
+      <span class="badge badge-cyan" aria-label="AI powered assistant">◈ AI ACTIVE</span>
     </div>
 
-    <!-- Fan services panel -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <!-- Notifications sent -->
-      <div class="card">
+    <div class="grid-2">
+      <div class="card" style="display:flex;flex-direction:column;height:500px">
         <div class="card-header">
-          <span class="card-title">Live Fan Notifications</span>
-          <span style="font-size:12px;color:var(--text-muted)">Sent to 63,400 fans</span>
+          <h2 class="card-title">Ask VenueIQ AI</h2>
+          <span class="badge badge-green">● Online</span>
         </div>
-        <div class="card-body">
-          ${[
-            { icon: '⏱', msg: 'Halftime in 8 minutes — head to concessions now to beat the rush!', time: '2 min ago', reach: '63.4k' },
-            { icon: '🅿', msg: 'Parking Lot C nearly full. Lot A has space — navigate →', time: '11 min ago', reach: '4.2k' },
-            { icon: '🌧', msg: 'Light drizzle expected at 21:30. Covered areas are open on Level 1.', time: '18 min ago', reach: '63.4k' },
-            { icon: '🍔', msg: 'Shortest food queue right now: Stand 3A (Vada Pav) — 2 min wait', time: '22 min ago', reach: '12.1k' },
-          ].map(n => `
-          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-            <div style="font-size:18px;flex-shrink:0">${n.icon}</div>
-            <div style="flex:1">
-              <div style="font-size:12.5px;line-height:1.4">${n.msg}</div>
-              <div style="display:flex;gap:10px;margin-top:4px">
-                <span style="font-size:10px;color:var(--text-dim)">${n.time}</span>
-                <span style="font-size:10px;color:var(--accent)">↗ ${n.reach} fans</span>
-              </div>
-            </div>
-          </div>`).join('')}
+        <div class="chat-messages" id="chat-messages" role="log" aria-label="Chat conversation" aria-live="polite" aria-relevant="additions">
+          <div class="chat-msg bot" role="article" aria-label="VenueIQ assistant message">
+            👋 Hi! I'm your VenueIQ assistant. I can help with directions, queue times, food options, parking, and more!<br><br>
+            Try asking: <em>"nearest washroom"</em>, <em>"food wait times"</em>, or <em>"best exit"</em>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <label for="chat-input" class="sr-only">Type your question</label>
+          <input type="text" id="chat-input" class="chat-input" placeholder="Ask about food, exits, parking..." 
+                 aria-label="Type your question to VenueIQ assistant"
+                 onkeypress="if(event.key==='Enter')sendMessage()" />
+          <button class="btn btn-primary" onclick="sendMessage()" aria-label="Send message">Send</button>
         </div>
       </div>
-
-      <!-- Fan feedback -->
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Live Sentiment</span>
-          <span class="tag tag-green">4.6 / 5 avg</span>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Quick Actions</h2>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" role="group" aria-label="Quick question buttons">
+            ${['🚻 Washroom', '🍔 Food Times', '🅿️ Parking', '🚪 Best Exit', '📶 WiFi Info', '💺 My Seat'].map(q => `
+              <button class="btn btn-ghost" style="justify-content:center;padding:10px" 
+                      onclick="quickAsk('${q}')" 
+                      aria-label="Ask about ${q.replace(/[^\w\s]/g, '')}">${q}</button>
+            `).join('')}
+          </div>
         </div>
-        <div class="card-body">
-          <div class="grid-2" style="gap:10px;margin-bottom:14px">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Fan Stats (Today)</h2>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
             ${[
-              { label: 'Food & Bev', score: 4.2, color: '#00e5a0' },
-              { label: 'Seating', score: 4.8, color: '#4ea8ff' },
-              { label: 'Queues', score: 3.9, color: '#ffd166' },
-              { label: 'Facilities', score: 4.5, color: '#00e5a0' },
-            ].map(s=>`
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <div style="display:flex;justify-content:space-between;font-size:12px">
-                <span style="color:var(--text-muted)">${s.label}</span>
-                <span style="color:${s.color};font-family:var(--font-mono)">${s.score}</span>
+              {label:'Queries Answered', val:'4,823', color:'var(--accent-cyan)'},
+              {label:'Avg Response Time', val:'0.3s', color:'var(--accent-green)'},
+              {label:'Fan Satisfaction', val:'98.2%', color:'var(--accent-yellow)'},
+              {label:'Reroutes Suggested', val:'1,247', color:'var(--accent-orange)'},
+            ].map(s => `
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+                <span style="font-size:0.8rem;color:var(--text-secondary)">${s.label}</span>
+                <span style="font-family:var(--font-mono);font-size:0.82rem;color:${s.color}">${s.val}</span>
               </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:${(s.score/5)*100}%;--fill-color:${s.color}"></div></div>
-            </div>`).join('')}
+            `).join('')}
           </div>
-          <div style="font-size:11px;color:var(--text-muted)">Based on 4,821 real-time responses · Last 30 min</div>
         </div>
       </div>
     </div>
-  </div>
-</div>`;
+
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0; }
+    </style>
+  `;
 }
 
-function fanAction(type) {
-  const responses = {
-    food: 'Nearest open food point: <strong>Stand 3A (Vada Pav) — 2.1 min wait</strong>. Tap to get directions from your seat!',
-    route: 'Best exit from Block N12: <strong>Gate A</strong> — 0.8 min walk, currently 2 min wait. Avoid Gate D (overcrowded).',
-    toilet: 'Nearest washroom: <strong>Level 1, North Wing</strong> — 0 min wait! Level 2 West is also open.',
-    merch: 'Merchandise at <strong>Stand 4B</strong> — 9 min wait ⚠️. Try <strong>Stand 4A</strong> (3 min wait, same items).',
-  };
-  addChatMsg('ai', responses[type]);
-}
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const messages = document.getElementById('chat-messages');
+  if (!input || !messages || !input.value.trim()) return;
 
-function fanChat(e) { if (e.key === 'Enter') fanChatSend(); }
+  const userText = input.value.trim();
+  trackFeature('fan-companion-query', 'message');
 
-function fanChatSend() {
-  const input = document.getElementById('fan-input');
-  const val = input?.value.trim();
-  if (!val) return;
-  addChatMsg('user', val);
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.setAttribute('role', 'article');
+  userMsg.setAttribute('aria-label', 'Your message');
+  userMsg.textContent = userText;
+  messages.appendChild(userMsg);
   input.value = '';
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.id = 'typing';
+  typing.setAttribute('aria-label', 'VenueIQ is typing');
+  typing.innerHTML = '<em style="color:var(--text-muted)">◌ Thinking...</em>';
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+
+  // Get response
   setTimeout(() => {
-    addChatMsg('ai', 'Great question! Based on current venue data, I recommend checking <strong>Food Court 2</strong> — it\'s the least busy right now with a 3.1 min wait. Shall I give you directions from your seat?');
-  }, 900);
+    typing.remove();
+    const response = getBotResponse(userText.toLowerCase());
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-msg bot';
+    botMsg.setAttribute('role', 'article');
+    botMsg.setAttribute('aria-label', 'VenueIQ assistant response');
+    botMsg.innerHTML = response.replace(/\n/g, '<br>');
+    messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  }, 600 + Math.random() * 400);
 }
 
-function addChatMsg(role, text) {
-  const chat = document.getElementById('companion-chat');
-  if (!chat) return;
-  const div = document.createElement('div');
-  div.className = `chat-msg ${role}`;
-  div.innerHTML = `<div class="chat-bubble">${text}</div>`;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+function getBotResponse(text) {
+  const r = VenueData.botResponses;
+  if (text.includes('wash') || text.includes('toilet') || text.includes('restroom')) return r['nearest washroom'];
+  if (text.includes('food') || text.includes('eat') || text.includes('hungry')) return r['food'];
+  if (text.includes('park')) return r['parking'];
+  if (text.includes('exit') || text.includes('leave') || text.includes('out')) return r['exit'];
+  if (text.includes('wait') || text.includes('queue') || text.includes('line')) return r['wait'];
+  if (text.includes('seat') || text.includes('block') || text.includes('section')) return r['seat'];
+  if (text.includes('wifi') || text.includes('internet') || text.includes('connect')) return r['wifi'];
+  if (text.includes('help') || text.includes('what')) return r['help'];
+  return r['default'];
 }
 
-function initCompanion() {}
+function quickAsk(q) {
+  const input = document.getElementById('chat-input');
+  if (input) {
+    input.value = q.replace(/[^\w\s]/g, '').trim();
+    sendMessage();
+  }
+}

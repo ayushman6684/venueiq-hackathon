@@ -1,99 +1,103 @@
-// ─── Mock Live Data Store ─────────────────────────────────────
-const DATA = {
-  event: {
-    name: 'IPL 2025 Finals',
-    teams: 'MI vs CSK',
-    venue: 'Wankhede Stadium',
-    capacity: 66000,
-    current: 63400,
-    quarter: 'Q3',
-    score: '18.2 ov | MI 156/4',
-  },
-
+// VenueIQ v3 - Data Layer
+const VenueData = {
+  stadium: { name: 'National Sports Complex', capacity: 80000, currentAttendance: 73240, sections: 8, gates: 12 },
   metrics: {
-    occupancy: { value: 96.1, unit: '%', change: +2.3, label: 'OCCUPANCY' },
-    avgWait: { value: 4.2, unit: 'MIN', change: -1.8, label: 'AVG WAIT TIME' },
-    incidents: { value: 2, unit: '', change: -3, label: 'ACTIVE INCIDENTS' },
-    satisfaction: { value: 4.6, unit: '/5', change: +0.2, label: 'FAN SCORE' },
+    occupancy: 91.5, avgWaitTime: 4.2, fanScore: 4.6, incidents: 3,
+    staffDeployed: 847, concessionRevenue: 284500, crowdFlow: 2340
   },
-
-  zones: [
-    { id: 'N', name: 'North Stand', capacity: 16000, current: 15200, exits: 4, crowd: 0.95 },
-    { id: 'S', name: 'South Stand', capacity: 18000, current: 17100, exits: 5, crowd: 0.95 },
-    { id: 'E', name: 'East Pavilion', capacity: 14000, current: 13200, exits: 3, crowd: 0.94 },
-    { id: 'W', name: 'West Wing', capacity: 18000, current: 17900, exits: 5, crowd: 0.99 },
+  gates: [
+    { id: 'G1', name: 'Gate A - North', wait: 3, status: 'normal', capacity: 85, zone: 'north' },
+    { id: 'G2', name: 'Gate B - North', wait: 7, status: 'busy', capacity: 92, zone: 'north' },
+    { id: 'G3', name: 'Gate C - East', wait: 2, status: 'normal', capacity: 67, zone: 'east' },
+    { id: 'G4', name: 'Gate D - East', wait: 12, status: 'critical', capacity: 98, zone: 'east' },
+    { id: 'G5', name: 'Gate E - South', wait: 4, status: 'normal', capacity: 78, zone: 'south' },
+    { id: 'G6', name: 'Gate F - South', wait: 5, status: 'normal', capacity: 80, zone: 'south' },
+    { id: 'G7', name: 'Gate G - West', wait: 8, status: 'busy', capacity: 88, zone: 'west' },
+    { id: 'G8', name: 'Gate H - West', wait: 6, status: 'normal', capacity: 82, zone: 'west' },
   ],
-
-  queues: [
-    { gate: 'Gate A', location: 'North Entrance', wait: 2.1, length: 34, trend: 'down', alert: false },
-    { gate: 'Gate B', location: 'South Entrance', wait: 4.8, length: 89, trend: 'up', alert: true },
-    { gate: 'Gate C', location: 'VIP Entry', wait: 0.8, length: 12, trend: 'stable', alert: false },
-    { gate: 'Gate D', location: 'East Access', wait: 6.2, length: 140, trend: 'up', alert: true },
-    { gate: 'Gate E', location: 'West Entry', wait: 3.3, length: 62, trend: 'down', alert: false },
-    { gate: 'Food Court 1', location: 'Level 1', wait: 7.5, length: 110, trend: 'up', alert: true },
-    { gate: 'Food Court 2', location: 'Level 2', wait: 3.1, length: 45, trend: 'stable', alert: false },
-    { gate: 'Merchandise', location: 'Main Concourse', wait: 9.2, length: 180, trend: 'up', alert: true },
+  foodCourts: [
+    { id: 'F1', name: 'Main Concourse - Level 1', wait: 6, status: 'normal', items: ['Hot Dogs', 'Burgers', 'Drinks'] },
+    { id: 'F2', name: 'North Stand - Level 2', wait: 14, status: 'critical', items: ['Pizza', 'Nachos', 'Beer'] },
+    { id: 'F3', name: 'East Wing Kiosk', wait: 3, status: 'normal', items: ['Snacks', 'Water', 'Juice'] },
+    { id: 'F4', name: 'VIP Lounge - Level 3', wait: 2, status: 'normal', items: ['Gourmet', 'Cocktails', 'Desserts'] },
+    { id: 'F5', name: 'South Plaza Food Court', wait: 9, status: 'busy', items: ['Indian', 'Chinese', 'Fast Food'] },
   ],
-
-  alerts: [
-    { id: 1, type: 'critical', title: 'Gate D — Overcrowding Risk', desc: 'Queue length exceeds 140 persons. Deploy 2 additional stewards. Consider opening Gate D-2.', time: '2 min ago', icon: '⚠' },
-    { id: 2, type: 'critical', title: 'Food Court 1 — Supply Low', desc: 'Samosa stock at 8%. Replenishment ETA 14 min. Recommend promoting alternatives.', time: '5 min ago', icon: '⚠' },
-    { id: 3, type: 'warning', title: 'Gate B — Wait Trending Up', desc: 'Average wait increased by 2.1 min in last 10 mins. Predictive model: may hit 8 min threshold in ~12 min.', time: '8 min ago', icon: '↑' },
-    { id: 4, type: 'warning', title: 'Parking Lot C — 94% Full', desc: 'Suggest routing incoming vehicles to Lot A or Lot E. Estimated 220 spots remaining.', time: '11 min ago', icon: '🅿' },
-    { id: 5, type: 'info', title: 'Halftime in 8 Minutes', desc: 'Predicted surge: Food Court +340%, Gate exits +180%. Staff on standby.', time: '12 min ago', icon: 'ℹ' },
-    { id: 6, type: 'info', title: 'Weather Update', desc: 'Light drizzle forecast at 21:30. Covered concourses pre-opened. PA announcement scheduled.', time: '18 min ago', icon: '🌧' },
+  incidents: [
+    { id: 1, type: 'critical', title: 'Overcrowding - Gate D East', zone: 'East Gate', time: '2 min ago', status: 'active', staff: 4 },
+    { id: 2, type: 'warning', title: 'Long Queue - North Stand F2', zone: 'North Food Court', time: '8 min ago', status: 'monitoring', staff: 2 },
+    { id: 3, type: 'info', title: 'Medical Assistance Required', zone: 'Section 14', time: '15 min ago', status: 'resolved', staff: 3 },
   ],
-
+  crowdZones: [
+    { name: 'North Stand', density: 94, color: '#ff3366', trend: 'increasing' },
+    { name: 'East Stand', density: 87, color: '#ff6b35', trend: 'stable' },
+    { name: 'South Stand', density: 78, color: '#ffd700', trend: 'decreasing' },
+    { name: 'West Stand', density: 82, color: '#ff6b35', trend: 'stable' },
+    { name: 'Center Field', density: 45, color: '#00ff88', trend: 'stable' },
+    { name: 'Concourse L1', density: 71, color: '#ffd700', trend: 'increasing' },
+    { name: 'VIP Area', density: 63, color: '#00d4ff', trend: 'stable' },
+    { name: 'Parking A', density: 56, color: '#00ff88', trend: 'decreasing' },
+  ],
   concessions: [
-    { name: 'Vada Pav', emoji: '🍔', stand: 'Stand 3A', price: 40, stock: 88, waitMin: 2.1, hot: true },
-    { name: 'Samosa', emoji: '🥟', stand: 'FC1', price: 30, stock: 8, waitMin: 7.5, hot: false },
-    { name: 'Cold Coffee', emoji: '☕', stand: 'Stand 5B', price: 80, stock: 62, waitMin: 1.8, hot: false },
-    { name: 'Popcorn', emoji: '🍿', stand: 'Level 2', price: 60, stock: 91, waitMin: 1.2, hot: false },
-    { name: 'Biryani', emoji: '🍛', stand: 'FC2', price: 150, stock: 45, waitMin: 3.1, hot: true },
-    { name: 'Ice Cream', emoji: '🍦', stand: 'Stand 7C', price: 70, stock: 78, waitMin: 1.5, hot: false },
-    { name: 'Nachos', emoji: '🌮', stand: 'FC1', price: 90, stock: 34, waitMin: 7.5, hot: true },
-    { name: 'Nimbu Pani', emoji: '🍋', stand: 'Stand 2A', price: 25, stock: 95, waitMin: 0.8, hot: false },
+    { id: 'C1', name: 'Hot Dogs', stock: 68, sold: 1240, revenue: 14880, demand: 'high', trend: 'up' },
+    { id: 'C2', name: 'Burgers', stock: 42, sold: 890, revenue: 17800, demand: 'medium', trend: 'stable' },
+    { id: 'C3', name: 'Beer / Draft', stock: 31, sold: 2100, revenue: 25200, demand: 'critical', trend: 'up' },
+    { id: 'C4', name: 'Soft Drinks', stock: 85, sold: 1850, revenue: 9250, demand: 'high', trend: 'stable' },
+    { id: 'C5', name: 'Pizza Slices', stock: 55, sold: 740, revenue: 11100, demand: 'medium', trend: 'up' },
+    { id: 'C6', name: 'Nachos', stock: 72, sold: 630, revenue: 9450, demand: 'low', trend: 'stable' },
+    { id: 'C7', name: 'Water Bottles', stock: 91, sold: 2400, revenue: 7200, demand: 'high', trend: 'stable' },
+    { id: 'C8', name: 'Ice Cream', stock: 44, sold: 410, revenue: 4920, demand: 'low', trend: 'down' },
   ],
-
-  heatmap: generateHeatmap(),
-  flowHistory: generateFlowHistory(),
-  hourlyOccupancy: generateHourly(),
+  botResponses: {
+    'nearest washroom': 'The nearest washroom to your current section is 40m away — Section 12, Level 2, near Gate C. Estimated wait: <1 min.',
+    'food': 'Best options right now:\n• East Wing Kiosk — only 3 min wait 🟢\n• Main Concourse — 6 min wait 🟡\n• Avoid North Stand F2 — 14 min wait 🔴',
+    'parking': 'Parking Lot A (West entrance) is filling up fast. Lot B and Lot C still have good availability. Exit via Gate H after the match to avoid traffic.',
+    'exit': 'Best exit routes after the match:\n• Gate A (North) — usually fastest\n• Gate E/F (South) — good for public transport\n• Avoid Gate D (East) — currently overcrowded',
+    'wait': 'Current average gate wait time: 4.2 minutes. Gate C (East) has the shortest wait at just 2 minutes!',
+    'seat': 'Your seat is in Block 12, Row G, Seat 23 — Level 2, East Stand. Take Gate C for the fastest access.',
+    'wifi': 'Free WiFi: Connect to "VenueIQ-Fan" — no password needed. Speeds are best in the lower concourse.',
+    'help': 'I can help with:\n• Nearest washrooms & facilities\n• Food court wait times\n• Best exit routes\n• Seat navigation\n• WiFi & facilities info\n\nJust ask me anything!',
+    'default': "I'm checking the live system for you... For fastest help, try: 'food', 'exit', 'washroom', 'parking', or 'wait times'."
+  }
 };
 
-function generateHeatmap() {
-  // 9 rows x 16 cols, simulating a stadium bird's eye
-  const grid = [];
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 16; c++) {
-      // Simulate high density at sides, lower at center field
-      const distFromEdge = Math.min(r, 8-r, c, 15-c);
-      const base = distFromEdge < 2 ? 0.85 + Math.random() * 0.15 : 0.1 + Math.random() * 0.3;
-      grid.push(Math.min(1, base + Math.random() * 0.1));
-    }
-  }
-  return grid;
+// Live update simulation
+let updateInterval = null;
+function startLiveUpdates(callback) {
+  if (updateInterval) clearInterval(updateInterval);
+  updateInterval = setInterval(() => {
+    // Update gate waits
+    VenueData.gates.forEach(g => {
+      g.wait = Math.max(1, g.wait + (Math.random() > 0.5 ? 1 : -1));
+      g.capacity = Math.min(100, Math.max(40, g.capacity + (Math.random() > 0.5 ? 2 : -2)));
+      g.status = g.wait > 10 ? 'critical' : g.wait > 6 ? 'busy' : 'normal';
+    });
+    // Update metrics
+    VenueData.metrics.avgWaitTime = parseFloat((Math.random() * 3 + 3).toFixed(1));
+    VenueData.metrics.crowdFlow = Math.floor(2000 + Math.random() * 700);
+    if (callback) callback();
+  }, 4000);
 }
 
-function generateFlowHistory() {
-  const data = [];
-  for (let i = 0; i < 24; i++) {
-    data.push(Math.floor(800 + Math.sin(i / 3) * 400 + Math.random() * 200));
-  }
-  return data;
+function stopLiveUpdates() {
+  if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
 }
 
-function generateHourly() {
-  return [12,18,25,40,55,70,82,90,96,94,88,72,65,78,85,88,91,94,96,95,90,82,68,40];
+function getStatusColor(status) {
+  return { normal: '#00ff88', busy: '#ffd700', critical: '#ff3366' }[status] || '#8a9bb8';
 }
 
-// Simulate live data updates
-function liveUpdate() {
-  DATA.metrics.avgWait.value = Math.max(1, DATA.metrics.avgWait.value + (Math.random() - 0.5) * 0.4);
-  DATA.metrics.satisfaction.value = Math.min(5, Math.max(3.5, DATA.metrics.satisfaction.value + (Math.random() - 0.5) * 0.05));
-  DATA.queues.forEach(q => {
-    q.wait = Math.max(0.5, q.wait + (Math.random() - 0.5) * 0.8);
-    q.length = Math.max(0, q.length + Math.floor((Math.random() - 0.5) * 15));
-  });
+function getHeatColor(density) {
+  if (density >= 90) return '#ff1a4f';
+  if (density >= 80) return '#ff3366';
+  if (density >= 70) return '#ff6b35';
+  if (density >= 60) return '#ffd700';
+  if (density >= 45) return '#88cc00';
+  return '#00ff88';
 }
 
-setInterval(liveUpdate, 4000);
+function getHeatCellColor(val) {
+  if (val > 85) return `rgba(255,51,102,${0.4 + val/200})`;
+  if (val > 70) return `rgba(255,107,53,${0.3 + val/250})`;
+  if (val > 55) return `rgba(255,215,0,${0.3 + val/300})`;
+  return `rgba(0,255,136,${0.1 + val/300})`;
+}

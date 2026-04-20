@@ -1,94 +1,75 @@
-// ─── Mini Chart Helpers ────────────────────────────────────────
-
-function drawSparkline(canvas, data, color = '#00e5a0', fill = true) {
+// VenueIQ v3 - Charts
+function drawSparkline(canvas, data, color = '#00d4ff') {
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
+  const w = canvas.offsetWidth || 120;
+  const h = canvas.offsetHeight || 40;
+  canvas.width = w; canvas.height = h;
+  ctx.clearRect(0, 0, w, h);
   const min = Math.min(...data), max = Math.max(...data);
   const range = max - min || 1;
-  const pts = data.map((v, i) => ({
-    x: (i / (data.length - 1)) * W,
-    y: H - ((v - min) / range) * (H - 4) - 2
-  }));
-
-  // Fill
-  if (fill) {
-    ctx.beginPath();
-    ctx.moveTo(pts[0].x, H);
-    pts.forEach(p => ctx.lineTo(p.x, p.y));
-    ctx.lineTo(pts[pts.length-1].x, H);
-    ctx.closePath();
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, color + '40');
-    grad.addColorStop(1, color + '00');
-    ctx.fillStyle = grad;
-    ctx.fill();
-  }
-
-  // Line
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  const step = w / (data.length - 1);
   ctx.strokeStyle = color;
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 2;
   ctx.lineJoin = 'round';
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / range) * (h - 8) - 4;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
   ctx.stroke();
+  // Fill
+  ctx.lineTo((data.length - 1) * step, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fillStyle = color.replace(')', ', 0.12)').replace('rgb', 'rgba').replace('#', 'rgba(') || 'rgba(0,212,255,0.08)';
+  try { ctx.fill(); } catch(e) {}
 }
 
-function drawBarChart(canvas, data, colors) {
+function drawBarChart(canvas, labels, values, color = '#00d4ff') {
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  const max = Math.max(...data.map(d => d.v));
-  const barW = (W - (data.length - 1) * 3) / data.length;
-
-  data.forEach((d, i) => {
-    const barH = (d.v / max) * (H - 20);
-    const x = i * (barW + 3);
-    const y = H - barH - 16;
-    const color = colors ? colors[i] : '#00e5a040';
-
-    ctx.beginPath();
-    ctx.roundRect(x, y, barW, barH, [2,2,0,0]);
+  const w = canvas.offsetWidth || 300;
+  const h = canvas.offsetHeight || 120;
+  canvas.width = w; canvas.height = h;
+  ctx.clearRect(0, 0, w, h);
+  const max = Math.max(...values) || 1;
+  const barW = (w / values.length) * 0.6;
+  const gap = (w / values.length) * 0.4;
+  values.forEach((v, i) => {
+    const barH = (v / max) * (h - 30);
+    const x = i * (barW + gap) + gap / 2;
+    const y = h - barH - 20;
     ctx.fillStyle = color;
+    ctx.globalAlpha = 0.7 + (i / values.length) * 0.3;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, barW, barH, 3) : ctx.rect(x, y, barW, barH);
     ctx.fill();
-
-    ctx.font = '9px DM Sans, sans-serif';
-    ctx.fillStyle = 'rgba(232,237,243,0.4)';
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '9px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(d.label, x + barW/2, H - 2);
+    if (labels[i]) ctx.fillText(labels[i], x + barW / 2, h - 4);
   });
 }
 
-function heatColor(value) {
-  // value: 0-1
-  if (value < 0.3) return `rgba(0,229,160,${0.15 + value * 0.5})`;
-  if (value < 0.6) return `rgba(255,209,102,${0.3 + value * 0.4})`;
-  if (value < 0.85) return `rgba(255,140,70,${0.5 + value * 0.3})`;
-  return `rgba(255,77,109,${0.6 + value * 0.3})`;
-}
-
-function drawDonut(canvas, pct, color = '#00e5a0') {
+function drawDonut(canvas, value, max, color = '#00d4ff') {
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const r = Math.min(W, H) / 2 - 4;
-  const cx = W / 2, cy = H / 2;
-  ctx.clearRect(0, 0, W, H);
-
-  // Background ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 6;
-  ctx.stroke();
-
-  // Filled arc
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + (pct/100) * Math.PI * 2);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 6;
-  ctx.lineCap = 'round';
-  ctx.stroke();
+  const s = Math.min(canvas.offsetWidth, canvas.offsetHeight) || 80;
+  canvas.width = s; canvas.height = s;
+  const cx = s/2, cy = s/2, r = s/2 - 6;
+  ctx.clearRect(0,0,s,s);
+  // BG arc
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 8; ctx.stroke();
+  // Value arc
+  const pct = value / max;
+  ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + Math.PI*2*pct);
+  ctx.strokeStyle = color; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.stroke();
+  // Label
+  ctx.fillStyle = '#e8edf5'; ctx.font = `bold ${s*0.2}px Rajdhani, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(Math.round(pct*100) + '%', cx, cy);
 }
