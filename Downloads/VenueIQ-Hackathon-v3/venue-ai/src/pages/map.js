@@ -340,3 +340,15 @@ function initMap() {
     gtag('event', 'page_view', { page_title: 'Venue Map', event_category: 'Navigation' });
   }
 }
+
+// Google Maps Integration
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDemo-VenueIQ-Key';
+const PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+function initGoogleMap() {
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 28.6139, lng: 77.2090 },
+    zoom: 14
+  });
+  const service = new google.maps.places.PlacesService(map);
+  return map;
+}
