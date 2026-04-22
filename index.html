@@ -2,173 +2,490 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="VenueIQ - AI-Powered Smart Stadium Experience Platform. Real-time crowd management, queue intelligence, and fan companion for large-scale sporting venues." />
-  <meta name="keywords" content="stadium management, crowd control, queue intelligence, fan experience, smart venue, AI sports" />
-  <meta name="author" content="VenueIQ Team" />
-  <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="VenueIQ – Smart Stadium OS" />
-  <meta property="og:description" content="AI-powered platform for real-time crowd management and seamless fan experience at large-scale sporting venues." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://ayushman6684.github.io/venueiq-hackathon/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="VenueIQ – Smart Stadium OS" />
-  <meta name="theme-color" content="#0a0f1e" />
-  <title>VenueIQ – Smart Stadium Experience Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="src/styles/main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="VenueIQ - AI-Powered Smart Stadium Experience Platform. Real-time crowd management, queue intelligence, and fan experience."/>
+  <meta name="keywords" content="stadium management, crowd control, queue intelligence, fan experience, smart stadium, AI, sports technology"/>
+  <meta name="author" content="Ayushman Yadav"/>
+  <meta name="robots" content="index, follow"/>
+  <meta property="og:title" content="VenueIQ — Smart Stadium OS"/>
+  <meta property="og:description" content="AI-powered Smart Stadium OS for real-time crowd management."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://ayushman6684.github.io/venueiq-hackathon/"/>
+  <meta name="theme-color" content="#00e5a0"/>
+  <title>VenueIQ — Smart Stadium Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <!-- Google Analytics GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VENUEIQ2024"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-VENUEIQ2024', {
-      page_title: 'VenueIQ Dashboard',
-      page_location: window.location.href,
-      send_page_view: true
-    });
-    // Track navigation events
-    function trackNav(page) {
-      gtag('event', 'page_view', { page_title: page, page_location: window.location.href + '#' + page });
-      gtag('event', 'navigation', { event_category: 'UI', event_label: page });
-    }
-    // Track feature usage
-    function trackFeature(feature, action) {
-      gtag('event', action || 'click', { event_category: 'Feature', event_label: feature });
+    gtag('config', 'G-XXXXXXXXXX');
+    function trackEvent(category, action, label) {
+      try { gtag('event', action, { event_category: category, event_label: label }); } catch(e) {}
     }
   </script>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#090c10;--bg2:#0f1318;--bg3:#141a22;
+  --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.13);
+  --accent:#00e5a0;--accent2:#ff4d6d;--accent3:#ffd166;--accent4:#4ea8ff;
+  --text:#e8edf3;--muted:rgba(232,237,243,0.45);--dim:rgba(232,237,243,0.22);
+  --r:10px;--r2:14px;--ff:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+html,body{height:100%}
+body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overflow:hidden}
+.skip-link{position:absolute;top:-100px;left:0;background:var(--accent);color:#000;padding:8px 16px;font-weight:600;z-index:9999;border-radius:0 0 8px 0;text-decoration:none}
+.skip-link:focus{top:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+#app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sidebar-logo{display:flex;align-items:center;gap:8px;padding:16px 14px 14px;border-bottom:1px solid var(--border)}
+.logo-mark{width:30px;height:30px;background:var(--accent);color:#000;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:7px;flex-shrink:0}
+.logo-name{font-size:17px;font-weight:700;letter-spacing:1px;line-height:1;display:block}
+.logo-sub{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:block}
+.nav-links{padding:10px 8px;flex:1;display:flex;flex-direction:column;gap:2px;list-style:none}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;cursor:pointer;transition:all .15s;color:var(--muted);font-size:12.5px}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.active{background:rgba(0,229,160,.1);color:var(--accent)}
+.nav-icon{width:16px;text-align:center;font-size:13px;flex-shrink:0}
+.badge{margin-left:auto;background:var(--accent2);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px}
+.sidebar-footer{padding:10px;border-top:1px solid var(--border)}
+.event-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;display:flex;align-items:center;gap:8px}
+.event-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);animation:pulse 1.5s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.event-name{font-size:11px;font-weight:500}
+.event-status{font-size:9px;color:var(--accent2);letter-spacing:.5px}
+.main-content{flex:1;overflow-y:auto;background:var(--bg)}
+.main-content::-webkit-scrollbar{width:3px}
+.main-content::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px}
+.page-header{padding:22px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;line-height:1}
+.page-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.header-actions{display:flex;gap:6px;align-items:center}
+.btn{padding:6px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:var(--ff)}
+.bg{background:transparent;border:1px solid var(--border-hi);color:var(--muted)}.bg:hover{color:var(--text)}
+.ba{background:var(--accent);color:#000}.ba:hover{opacity:.9}
+.lchip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,77,109,.12);border:1px solid rgba(255,77,109,.25);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:var(--accent2)}
+.ld{width:5px;height:5px;border-radius:50%;background:var(--accent2);animation:pulse 1.2s infinite}
+.pb{padding:16px 28px 28px;display:flex;flex-direction:column;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--accent));opacity:.7}
+.mc:hover{border-color:var(--border-hi)}
+.ml{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.mv{font-size:32px;font-weight:800;color:var(--text);line-height:1.1;margin:4px 0}
+.mch{font-size:11px;color:var(--accent)}
+.mic{position:absolute;top:12px;right:12px;font-size:18px;opacity:.2}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.ch{padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.ct{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.cb{padding:14px 16px}
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:14px;font-size:10px;font-weight:600}
+.tg{background:rgba(0,229,160,.12);color:var(--accent)}
+.tr{background:rgba(255,77,109,.12);color:var(--accent2)}
+.ty{background:rgba(255,209,102,.12);color:var(--accent3)}
+.tb{background:rgba(78,168,255,.12);color:var(--accent4)}
+.pb2{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .4s}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sr:last-child{border-bottom:none}
+.tab{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:var(--muted);border:none;background:transparent;font-family:var(--ff);transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.on{background:rgba(0,229,160,.1);color:var(--accent)}
+.hmap{display:grid;grid-template-columns:repeat(14,1fr);grid-template-rows:repeat(8,1fr);gap:2px;height:130px;border-radius:7px;overflow:hidden;background:var(--bg3);padding:6px}
+canvas{display:block}
+.ai-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ai-item:last-child{border-bottom:none}
+  </style>
 </head>
 <body>
-  <!-- Skip navigation for accessibility -->
-  <a href="#main-content" class="skip-link" tabindex="0">Skip to main content</a>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div id="app" role="application">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="logo-mark" aria-hidden="true">V</div>
+      <div><span class="logo-name">VenueIQ</span><span class="logo-sub">Stadium OS</span></div>
+    </div>
+    <ul class="nav-links" role="menubar">
+      <li class="nav-item active" role="menuitem" tabindex="0" data-page="dashboard" onclick="go(this,'dashboard')" onkeypress="if(event.key==='Enter')go(this,'dashboard')" aria-current="page"><span class="nav-icon" aria-hidden="true">◈</span>Dashboard</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="crowd" onclick="go(this,'crowd')" onkeypress="if(event.key==='Enter')go(this,'crowd')"><span class="nav-icon" aria-hidden="true">⊕</span>Crowd Flow</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="queues" onclick="go(this,'queues')" onkeypress="if(event.key==='Enter')go(this,'queues')"><span class="nav-icon" aria-hidden="true">≡</span>Queue Intel</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="alerts" onclick="go(this,'alerts')" onkeypress="if(event.key==='Enter')go(this,'alerts')"><span class="nav-icon" aria-hidden="true">◉</span>Live Alerts<span class="badge" aria-label="3 alerts">3</span></li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="companion" onclick="go(this,'companion')" onkeypress="if(event.key==='Enter')go(this,'companion')"><span class="nav-icon" aria-hidden="true">✦</span>Fan Companion</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="concessions" onclick="go(this,'concessions')" onkeypress="if(event.key==='Enter')go(this,'concessions')"><span class="nav-icon" aria-hidden="true">◫</span>Concessions</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="analytics" onclick="go(this,'analytics')" onkeypress="if(event.key==='Enter')go(this,'analytics')"><span class="nav-icon" aria-hidden="true">▲</span>Analytics</li>
+      <li class="nav-item" role="menuitem" tabindex="0" data-page="map" onclick="go(this,'map')" onkeypress="if(event.key==='Enter')go(this,'map')"><span class="nav-icon" aria-hidden="true">📍</span>Venue Map</li>
+    </ul>
+    <div class="sidebar-footer" role="status" aria-live="polite">
+      <div class="event-card"><div class="event-dot" aria-hidden="true"></div><div><div class="event-name">IPL 2025 Finals</div><div class="event-status">LIVE · Q3 · 63,400 fans</div></div></div>
+    </div>
+  </nav>
+  <main class="main-content" id="main-content" role="main" tabindex="-1"></main>
+</div>
 
-  <div class="app-shell" role="application" aria-label="VenueIQ Stadium Management Platform">
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const DATA = {
+  event:{ name:'IPL 2025 Finals', teams:'MI vs CSK', venue:'Wankhede Stadium', capacity:66000, current:63400, quarter:'Q3' },
+  metrics:{
+    occupancy:{value:96.1,change:+2.3},
+    avgWait:{value:4.2,change:-1.8},
+    incidents:{value:2,change:-3},
+    satisfaction:{value:4.6,change:+0.2}
+  },
+  zones:[
+    {id:'N',name:'North Stand',capacity:16000,current:15200,exits:4,crowd:0.95},
+    {id:'S',name:'South Stand',capacity:18000,current:17100,exits:5,crowd:0.95},
+    {id:'E',name:'East Pavilion',capacity:14000,current:13200,exits:3,crowd:0.94},
+    {id:'W',name:'West Wing',capacity:18000,current:17900,exits:5,crowd:0.99}
+  ],
+  queues:[
+    {gate:'Gate A',location:'North Entrance',wait:2.1,length:34,alert:false},
+    {gate:'Gate B',location:'South Entrance',wait:4.8,length:89,alert:true},
+    {gate:'Gate C',location:'VIP Entry',wait:0.8,length:12,alert:false},
+    {gate:'Gate D',location:'East Access',wait:6.2,length:140,alert:true},
+    {gate:'Gate E',location:'West Entry',wait:3.3,length:62,alert:false},
+    {gate:'Food Court 1',location:'Level 1',wait:7.5,length:110,alert:true},
+    {gate:'Food Court 2',location:'Level 2',wait:3.1,length:45,alert:false},
+    {gate:'Merchandise',location:'Main Concourse',wait:9.2,length:180,alert:true}
+  ],
+  alerts:[
+    {id:1,type:'critical',title:'Gate D — Overcrowding Risk',desc:'Queue exceeds 140 persons. Deploy 2 stewards.',time:'2 min ago',icon:'⚠'},
+    {id:2,type:'critical',title:'Food Court 1 — Supply Low',desc:'Samosa at 8%. Replenishment ETA 14 min.',time:'5 min ago',icon:'⚠'},
+    {id:3,type:'warning',title:'Gate B — Wait Trending Up',desc:'Wait increased 2.1 min in last 10 min.',time:'8 min ago',icon:'↑'},
+    {id:4,type:'warning',title:'Parking Lot C — 94% Full',desc:'Route incoming to Lot A or E.',time:'11 min ago',icon:'🅿'},
+    {id:5,type:'info',title:'Halftime in 8 Minutes',desc:'Predicted surge: Food +340%, Exits +180%.',time:'12 min ago',icon:'ℹ'},
+    {id:6,type:'info',title:'Weather Update',desc:'Light drizzle forecast at 21:30.',time:'18 min ago',icon:'🌧'}
+  ],
+  concessions:[
+    {name:'Vada Pav',emoji:'🍔',stand:'Stand 3A',price:40,stock:88,waitMin:2.1},
+    {name:'Samosa',emoji:'🥟',stand:'FC1',price:30,stock:8,waitMin:7.5},
+    {name:'Cold Coffee',emoji:'☕',stand:'Stand 5B',price:80,stock:62,waitMin:1.8},
+    {name:'Popcorn',emoji:'🍿',stand:'Level 2',price:60,stock:91,waitMin:1.2},
+    {name:'Biryani',emoji:'🍛',stand:'FC2',price:150,stock:45,waitMin:3.1},
+    {name:'Ice Cream',emoji:'🍦',stand:'Stand 7C',price:70,stock:78,waitMin:1.5}
+  ],
+  heatmap: Array.from({length:112},(_,i)=>{const r=Math.floor(i/14),c=i%14,d=Math.min(r,7-r,c,13-c);return d<2?0.8+Math.random()*0.2:0.1+Math.random()*0.4}),
+  flowHistory: Array.from({length:24},(_,i)=>800+Math.sin(i/3)*400+Math.random()*200),
+  hourlyOcc: [12,18,25,40,55,70,82,90,96,94,88,72,65,78,85,88,91,94,96,95,90,82,68,40]
+};
+setInterval(()=>{
+  DATA.metrics.avgWait.value=Math.max(1,DATA.metrics.avgWait.value+(Math.random()-.5)*.4);
+  DATA.queues.forEach(q=>{q.wait=Math.max(.5,q.wait+(Math.random()-.5)*.8);q.length=Math.max(0,q.length+Math.floor((Math.random()-.5)*10));});
+},4000);
 
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar" role="navigation" aria-label="Main navigation">
-      <div class="sidebar-brand" role="banner">
-        <div class="brand-icon" aria-hidden="true">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="14" stroke="#00d4ff" stroke-width="2"/>
-            <path d="M8 20 Q16 8 24 20" stroke="#00d4ff" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="16" r="3" fill="#00d4ff"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-name">VenueIQ</span>
-          <span class="brand-tagline">Smart Stadium OS</span>
-        </div>
-      </div>
+// ── CHARTS ────────────────────────────────────────────────────
+function spark(canvas,data,color){
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*dpr||400;
+  canvas.height=canvas.offsetHeight*dpr||80;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
+  const pts=data.map((v,i)=>({x:(i/(data.length-1))*W,y:H-((v-mn)/rng)*(H-4)-2}));
+  ctx.beginPath();ctx.moveTo(pts[0].x,H);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H);ctx.closePath();
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,color+'40');g.addColorStop(1,color+'00');
+  ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
+}
+function heatColor(v){return v>.85?`rgba(255,77,109,${.6+v*.3})`:v>.6?`rgba(255,140,70,${.5+v*.3})`:v>.35?`rgba(255,209,102,${.3+v*.4})`:`rgba(0,229,160,${.15+v*.5})`;}
 
-      <ul class="nav-list" role="list">
-        <li role="listitem">
-          <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard'); trackNav('dashboard')" aria-current="page" aria-label="Command Center Dashboard">
-            <span class="nav-icon" aria-hidden="true">⬡</span>
-            <span class="nav-label">Command Center</span>
-            <span class="nav-badge live" aria-label="Live data">LIVE</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="crowd" onclick="navigate('crowd'); trackNav('crowd')" aria-label="Crowd Flow Management">
-            <span class="nav-icon" aria-hidden="true">◈</span>
-            <span class="nav-label">Crowd Flow</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="queues" onclick="navigate('queues'); trackNav('queues')" aria-label="Queue Intelligence">
-            <span class="nav-icon" aria-hidden="true">◎</span>
-            <span class="nav-label">Queue Intel</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="alerts" onclick="navigate('alerts'); trackNav('alerts')" aria-label="Live Alerts and Incidents">
-            <span class="nav-icon" aria-hidden="true">◉</span>
-            <span class="nav-label">Live Alerts</span>
-            <span class="nav-badge urgent" id="alert-count" aria-label="3 active alerts" aria-live="polite">3</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="companion" onclick="navigate('companion'); trackNav('companion')" aria-label="AI Fan Companion Chatbot">
-            <span class="nav-icon" aria-hidden="true">◌</span>
-            <span class="nav-label">Fan Companion</span>
-            <span class="nav-badge ai" aria-label="AI powered">AI</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="concessions" onclick="navigate('concessions'); trackNav('concessions')" aria-label="Concessions Management">
-            <span class="nav-icon" aria-hidden="true">◇</span>
-            <span class="nav-label">Concessions</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="analytics" onclick="navigate('analytics'); trackNav('analytics')" aria-label="Analytics and Insights">
-            <span class="nav-icon" aria-hidden="true">◈</span>
-            <span class="nav-label">Analytics</span>
-          </button>
-        </li>
-        <li role="listitem">
-          <button class="nav-item" data-page="map" onclick="navigate('map'); trackNav('map')" aria-label="Google Maps Venue View">
-            <span class="nav-icon" aria-hidden="true">◫</span>
-            <span class="nav-label">Venue Map</span>
-            <span class="nav-badge google" aria-label="Powered by Google">G</span>
-          </button>
-        </li>
-      </ul>
-
-      <div class="sidebar-footer" role="contentinfo">
-        <div class="venue-status" aria-live="polite" aria-atomic="true">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span class="status-text">Event Active</span>
-        </div>
-        <div class="capacity-mini" aria-label="Stadium capacity status">
-          <span id="cap-mini">73,240</span>
-          <span class="cap-label"> / 80,000</span>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main id="main-content" class="main-content" role="main" tabindex="-1">
-      <div id="page-container" aria-live="polite" aria-atomic="false"></div>
-    </main>
-
+// ── PAGES ─────────────────────────────────────────────────────
+function pgDashboard(){
+  const m=DATA.metrics;
+  return `<div class="page-header"><div><div class="page-title">COMMAND CENTER</div><div class="page-sub">Wankhede Stadium · MI vs CSK · Live updates every 4s</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div><button class="btn ba" onclick="trackEvent('Dashboard','alert_staff','click')">Alert Staff</button></div></div>
+<div class="pb">
+  <div class="g4">
+    <div class="mc" style="--ac:#00e5a0"><div class="mic">◉</div><div class="ml">Occupancy</div><div class="mv" id="v-occ">${m.occupancy.value.toFixed(1)}%</div><div class="mch">↑ +${m.occupancy.change}% vs entry</div></div>
+    <div class="mc" style="--ac:#ffd166"><div class="mic">⏱</div><div class="ml">Avg Wait</div><div class="mv" id="v-wait">${m.avgWait.value.toFixed(1)}<span style="font-size:14px;opacity:.5"> min</span></div><div class="mch">↓ improved</div></div>
+    <div class="mc" style="--ac:#ff4d6d"><div class="mic">⚠</div><div class="ml">Incidents</div><div class="mv">${m.incidents.value}</div><div class="mch" style="color:var(--muted)">↓ vs last match</div></div>
+    <div class="mc" style="--ac:#4ea8ff"><div class="mic">★</div><div class="ml">Fan Score</div><div class="mv">${m.satisfaction.value}<span style="font-size:14px;opacity:.5">/5</span></div><div class="mch">↑ +${m.satisfaction.change}</div></div>
   </div>
+  <div class="g2" style="grid-template-columns:1.5fr 1fr">
+    <div class="card">
+      <div class="ch"><span class="ct">Live Crowd Density</span><div style="display:flex;gap:6px;align-items:center"><span style="width:7px;height:7px;background:#00e5a0;opacity:.6;border-radius:2px;display:inline-block"></span><span style="font-size:10px;color:var(--muted)">Low</span><span style="width:7px;height:7px;background:#ffd166;opacity:.7;border-radius:2px;display:inline-block"></span><span style="font-size:10px;color:var(--muted)">High</span></div></div>
+      <div class="cb"><div class="hmap" id="hmap" role="img" aria-label="Crowd density heatmap"></div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Zone Status</span></div>
+      <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+        ${DATA.zones.map(z=>`<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${z.name}</span><span style="font-family:var(--fm);color:${z.crowd>.97?'var(--accent2)':z.crowd>.9?'var(--accent3)':'var(--accent)'}">${(z.crowd*100).toFixed(0)}%</span></div><div class="pb2"><div class="pf" style="width:${z.crowd*100}%;background:${z.crowd>.97?'#ff4d6d':z.crowd>.9?'#ffd166':'#00e5a0'}"></div></div></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ch"><span class="ct">Entry Flow</span></div><div class="cb"><canvas id="c-flow" style="width:100%;height:70px" aria-label="Entry flow chart"></canvas></div></div>
+    <div class="card"><div class="ch"><span class="ct">Occupancy Trend</span></div><div class="cb"><canvas id="c-occ" style="width:100%;height:70px" aria-label="Occupancy trend chart"></canvas></div></div>
+    <div class="card"><div class="ch"><span class="ct">Top Waits</span></div><div class="cb">${DATA.queues.sort((a,b)=>b.wait-a.wait).slice(0,5).map(q=>`<div class="sr"><span style="color:var(--muted)">${q.gate}</span><span class="tag ${q.wait>6?'tr':q.wait>4?'ty':'tg'}">${q.wait.toFixed(1)} min</span></div>`).join('')}</div></div>
+  </div>
+</div>`;
+}
 
-  <script src="src/utils/data.js"></script>
-  <script src="src/utils/charts.js"></script>
-  <script src="src/utils/router.js"></script>
-  <script src="src/pages/dashboard.js"></script>
-  <script src="src/pages/crowd.js"></script>
-  <script src="src/pages/queues.js"></script>
-  <script src="src/pages/alerts.js"></script>
-  <script src="src/pages/companion.js"></script>
-  <script src="src/pages/concessions.js"></script>
-  <script src="src/pages/analytics.js"></script>
-  <script src="src/pages/map.js"></script>
-  <script>
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', () => {
-      navigate('dashboard');
-      // Cache DOM references for performance
-      const capMini = document.getElementById('cap-mini');
-      setInterval(() => {
-        const cap = 73000 + Math.floor(Math.random() * 500);
-        if (capMini) capMini.textContent = cap.toLocaleString();
-      }, 5000);
-    });
+function pgCrowd(){
+  return `<div class="page-header"><div><div class="page-title">CROWD FLOW</div><div class="page-sub">Real-time movement tracking & AI routing</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div></div></div>
+<div class="pb">
+  <div class="g2" style="grid-template-columns:1.5fr 1fr">
+    <div class="card">
+      <div class="ch"><span class="ct">Interactive Venue Map</span></div>
+      <div class="cb" style="padding:0">
+        <svg viewBox="0 0 480 340" style="width:100%;display:block;padding:16px" role="img" aria-label="Stadium venue map">
+          <ellipse cx="240" cy="170" rx="210" ry="150" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+          <ellipse cx="240" cy="170" rx="128" ry="92" fill="rgba(0,229,160,.05)" stroke="rgba(0,229,160,.15)" stroke-width="1"/>
+          <text x="240" y="175" text-anchor="middle" fill="rgba(0,229,160,.4)" font-size="10" font-family="DM Sans">PITCH</text>
+          <path d="M90 35 Q240 18 390 35 L372 75 Q240 60 108 75 Z" fill="rgba(255,77,109,.22)" stroke="rgba(255,77,109,.35)" stroke-width="1"/>
+          <text x="240" y="54" text-anchor="middle" fill="rgba(232,237,243,.6)" font-size="9">NORTH · 95%</text>
+          <path d="M108 265 Q240 280 372 265 L390 305 Q240 322 90 305 Z" fill="rgba(255,77,109,.22)" stroke="rgba(255,77,109,.35)" stroke-width="1"/>
+          <text x="240" y="289" text-anchor="middle" fill="rgba(232,237,243,.6)" font-size="9">SOUTH · 95%</text>
+          <path d="M30 88 L90 82 L90 258 L30 252 Z" fill="rgba(255,209,102,.18)" stroke="rgba(255,209,102,.35)" stroke-width="1"/>
+          <path d="M390 82 L450 88 L450 252 L390 258 Z" fill="rgba(78,168,255,.18)" stroke="rgba(78,168,255,.3)" stroke-width="1"/>
+          <circle cx="240" cy="22" r="6" fill="#ffd166" opacity=".9"/><text x="240" y="13" text-anchor="middle" fill="rgba(232,237,243,.5)" font-size="8">Gate A</text>
+          <circle cx="240" cy="318" r="6" fill="#ffd166" opacity=".9"/><text x="240" y="330" text-anchor="middle" fill="rgba(232,237,243,.5)" font-size="8">Gate B</text>
+          <circle cx="455" cy="170" r="6" fill="#ff4d6d" opacity=".9"/>
+          <circle cx="455" cy="170" r="14" fill="none" stroke="#ff4d6d" stroke-width="1.2" opacity=".6"><animate attributeName="r" values="10;20;10" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite"/></circle>
+          <text x="467" y="174" fill="rgba(232,237,243,.5)" font-size="8">Gate D ⚠</text>
+          <circle cx="22" cy="170" r="6" fill="#00e5a0" opacity=".9"/><text x="22" y="182" text-anchor="middle" fill="rgba(232,237,243,.5)" font-size="8">VIP</text>
+        </svg>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ch"><span class="ct">Surge Prediction</span><span class="tag tb">AI</span></div><div class="cb">
+        ${[['North Concourse',78,'#00e5a0','+340 pax'],['Food Courts',65,'#ffd166','+280 pax'],['Gate D',92,'#ff4d6d','OVERFLOW ⚠'],['Merchandise',55,'#4ea8ff','+120 pax']].map(([z,p,c,d])=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${z}</span><span style="color:${c};font-family:var(--fm)">${d}</span></div><div class="pb2"><div class="pf" style="width:${p}%;background:${c}"></div></div></div>`).join('')}
+      </div></div>
+      <div class="card"><div class="ch"><span class="ct">AI Recommendations</span><span class="tag tg">Live</span></div><div class="cb">
+        ${[['→','Open Gate D-2 immediately','tr'],['📢','Redirect fans to Gate A via PA','ty'],['🚶','Deploy 3 stewards: North','tb']].map(([ic,t,cls])=>`<div class="ai-item"><span style="font-size:15px">${ic}</span><div style="flex:1;font-size:12px">${t}</div><button class="btn bg" style="padding:3px 8px;font-size:10px" onclick="trackEvent('Crowd','action_taken','${t.substring(0,20)}')">Act</button></div>`).join('')}
+      </div></div>
+    </div>
+  </div>
+</div>`;
+}
 
-    // Keyboard navigation support
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') document.body.classList.add('keyboard-nav');
-    });
-    document.addEventListener('mousedown', () => {
-      document.body.classList.remove('keyboard-nav');
-    });
-  </script>
+function pgQueues(){
+  return `<div class="page-header"><div><div class="page-title">QUEUE INTEL</div><div class="page-sub">Real-time wait monitoring across all entry & service points</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div></div></div>
+<div class="pb">
+  <div class="g4">
+    ${[['Gates Open','12/14','#00e5a0'],['Avg Wait',DATA.metrics.avgWait.value.toFixed(1)+' min','#ffd166'],['Peak Queue','Gate D','#ff4d6d'],['Queuing Total',DATA.queues.reduce((s,q)=>s+q.length,0)+' pax','#4ea8ff']].map(([l,v,c])=>`<div class="mc" style="--ac:${c}"><div class="ml">${l}</div><div class="mv" style="font-size:24px">${v}</div></div>`).join('')}
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">All Queue Points</span><span style="font-size:11px;color:var(--muted)">Auto-updates 4s</span></div>
+    <div class="cb" id="qtable">${DATA.queues.map(q=>`<div style="display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><div><div style="font-weight:500;font-size:12.5px">${q.gate}</div><div style="font-size:11px;color:var(--muted)">${q.location}</div></div><div style="font-family:var(--fm);color:var(--accent3)">${q.wait.toFixed(1)} min</div><span class="tag ${q.alert?'tr':q.wait>4?'ty':'tg'}">${q.length} pax</span></div>`).join('')}</div></div>
+    <div class="card"><div class="ch"><span class="ct">Smart Routing</span><span class="tag tg">AI</span></div><div class="cb">
+      ${[['South fan → Food','Stand 3A (2.1 min) not FC1 (7.5 min). Save 5.4 min.','tg'],['Exit Routing','Use Gate A & C for North fans. Gate D at capacity.','ty'],['Merch Rush','Open counter at Stand M2. 180 pax, 9.2 min wait.','tb']].map(([t,d,c])=>`<div style="padding:10px;background:rgba(0,229,160,.04);border:1px solid rgba(0,229,160,.12);border-radius:var(--r);margin-bottom:8px"><div style="font-size:12px;font-weight:500;margin-bottom:3px">${t}</div><div style="font-size:11.5px;color:var(--muted)">${d}</div></div>`).join('')}
+    </div></div>
+  </div>
+</div>`;
+}
+
+function pgAlerts(){
+  return `<div class="page-header"><div><div class="page-title">LIVE ALERTS</div><div class="page-sub">Incident management & real-time coordination center</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div><button class="btn" style="background:rgba(255,77,109,.12);border:1px solid rgba(255,77,109,.3);color:var(--accent2);font-size:11px;padding:5px 11px;border-radius:7px;font-family:var(--ff);cursor:pointer" onclick="trackEvent('Alerts','broadcast_pa','click')">Broadcast PA</button></div></div>
+<div class="pb">
+  <div class="g3">
+    <div class="mc" style="--ac:#ff4d6d"><div class="ml">Critical</div><div class="mv" style="font-size:26px">${DATA.alerts.filter(a=>a.type==='critical').length}</div></div>
+    <div class="mc" style="--ac:#ffd166"><div class="ml">Warning</div><div class="mv" style="font-size:26px">${DATA.alerts.filter(a=>a.type==='warning').length}</div></div>
+    <div class="mc" style="--ac:#4ea8ff"><div class="ml">Info</div><div class="mv" style="font-size:26px">${DATA.alerts.filter(a=>a.type==='info').length}</div></div>
+  </div>
+  <div class="g2" style="grid-template-columns:1.4fr 1fr">
+    <div class="card"><div class="ch"><span class="ct">All Incidents</span></div><div class="cb">
+      ${DATA.alerts.map(a=>`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:${a.type==='critical'?'rgba(255,77,109,.12)':a.type==='warning'?'rgba(255,209,102,.1)':'rgba(78,168,255,.1)'};flex-shrink:0">${a.icon}</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500">${a.title}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${a.desc}</div><div style="font-size:9px;color:var(--dim);margin-top:3px;font-family:var(--fm)">${a.time}</div></div><button class="btn bg" style="padding:3px 8px;font-size:10px;flex-shrink:0" onclick="trackEvent('Alerts','resolve','${a.id}')">Resolve</button></div>`).join('')}
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ch"><span class="ct">Staff Dispatch</span><span class="tag tg">12 on duty</span></div><div class="cb">
+        ${[['Team Alpha','Gate D Area','Deployed','tr'],['Team Beta','Food Court 1','Standby','ty'],['Medic Unit 1','North Stand','Available','tg'],['Tech Support','Control Room','Active','ty']].map(([n,l,s,c])=>`<div class="sr"><div><div style="font-size:12.5px;font-weight:500">${n}</div><div style="font-size:10px;color:var(--muted)">${l}</div></div><span class="tag ${c}">${s}</span></div>`).join('')}
+        <button class="btn ba" style="width:100%;margin-top:10px;font-size:12px" onclick="trackEvent('Alerts','dispatch_all','click')">Dispatch All Available</button>
+      </div></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function pgCompanion(){
+  return `<div class="page-header"><div><div class="page-title">FAN COMPANION</div><div class="page-sub">AI-powered assistant for every attendee</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div></div></div>
+<div class="pb">
+  <div class="g2" style="grid-template-columns:1fr 1.4fr">
+    <div class="card"><div class="ch"><span class="ct">Fan App Preview</span></div><div class="cb">
+      <div style="max-width:260px;margin:0 auto;background:var(--bg3);border-radius:20px;border:1px solid var(--border-hi);padding:16px">
+        <div style="background:var(--accent);color:#000;border-radius:10px;padding:10px 12px;margin-bottom:12px"><div style="font-size:10px;opacity:.7">🏏 IPL FINALS · LIVE</div><div style="font-size:13px;font-weight:600">MI vs CSK · 156/4</div><div style="font-size:10px;opacity:.7;margin-top:2px">Seat: Block N12 · Row G · 24</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+          ${[['🍔','Order Food','2.1 min'],['🗺️','Best Route','Exit guide'],['🚻','Washrooms','0 min wait'],['👕','Merch','Stand 4B']].map(([ic,l,s])=>`<button style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px;text-align:center;cursor:pointer;color:var(--text);font-family:var(--ff)" onclick="trackEvent('FanApp','quick_action','${l}')" aria-label="${l}"><div style="font-size:18px;margin-bottom:3px">${ic}</div><div style="font-size:11px;font-weight:500">${l}</div><div style="font-size:9px;color:var(--muted)">${s}</div></button>`).join('')}
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px">
+          <div style="font-size:9px;letter-spacing:1.5px;color:var(--accent);margin-bottom:7px;font-weight:600">✦ VENUE AI</div>
+          <div id="fan-chat" style="max-height:100px;overflow-y:auto">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:3px 9px 9px 9px;padding:7px 10px;font-size:11.5px;line-height:1.4;margin-bottom:7px">Halftime in <strong>8 min</strong> 🏏 Head to Food Court 2 — only 3 min wait!</div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <input id="fi" placeholder="Ask anything..." style="flex:1;background:var(--bg3);border:1px solid var(--border-hi);border-radius:7px;padding:6px 9px;font-size:11px;color:var(--text);outline:none;font-family:var(--ff)" onkeypress="if(event.key==='Enter')sendFan()" aria-label="Chat with AI assistant"/>
+            <button onclick="sendFan()" style="background:var(--accent);color:#000;border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-weight:600;font-size:12px" aria-label="Send message">→</button>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ch"><span class="ct">Live Notifications</span><span style="font-size:11px;color:var(--muted)">63,400 fans</span></div><div class="cb">
+        ${[['⏱','Halftime in 8 min — beat the rush now!','2 min ago','63.4k'],['🅿','Parking Lot C full — navigate to Lot A','11 min ago','4.2k'],['🌧','Light drizzle at 21:30 — Level 1 covered','18 min ago','63.4k'],['🍔','Stand 3A: 2 min wait only','22 min ago','12.1k']].map(([ic,m,t,r])=>`<div style="display:flex;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)"><span style="font-size:16px">${ic}</span><div style="flex:1"><div style="font-size:12px;line-height:1.4">${m}</div><div style="display:flex;gap:8px;margin-top:3px"><span style="font-size:9px;color:var(--dim)">${t}</span><span style="font-size:9px;color:var(--accent)">↗ ${r}</span></div></div></div>`).join('')}
+      </div></div>
+      <div class="card"><div class="ch"><span class="ct">Sentiment</span><span class="tag tg">4.6/5</span></div><div class="cb">
+        ${[['Seating',4.8,'#00e5a0'],['Food',4.3,'#4ea8ff'],['Queues',3.9,'#ffd166'],['Facilities',4.5,'#00e5a0']].map(([l,v,c])=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--muted)">${l}</span><span style="font-family:var(--fm);color:${c}">${v}</span></div><div class="pb2"><div class="pf" style="width:${(v/5)*100}%;background:${c}"></div></div></div>`).join('')}
+      </div></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function pgConcessions(){
+  return `<div class="page-header"><div><div class="page-title">CONCESSIONS</div><div class="page-sub">Inventory intelligence & demand forecasting</div></div><div class="header-actions"><div class="lchip"><div class="ld"></div>LIVE</div><button class="btn ba" onclick="trackEvent('Concessions','print_report','click')">Print Report</button></div></div>
+<div class="pb">
+  <div class="g4">${[['Stands Active','24/26','#00e5a0'],['Low Stock','3 items','#ff4d6d'],['Avg Queue','3.4 min','#ffd166'],['Txns/Hour','4,280','#4ea8ff']].map(([l,v,c])=>`<div class="mc" style="--ac:${c}"><div class="ml">${l}</div><div class="mv" style="font-size:24px">${v}</div></div>`).join('')}</div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">Menu Inventory</span></div><div class="cb">
+      ${DATA.concessions.map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><span style="font-size:20px;width:28px;text-align:center">${i.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${i.name}</div><div style="font-size:11px;color:var(--muted)">${i.stand} · ₹${i.price}</div></div><span style="font-family:var(--fm);font-size:12px;color:${i.stock<20?'var(--accent2)':i.stock<50?'var(--accent3)':'var(--accent)'}">${i.stock}%</span><div class="pb2" style="width:50px;margin-left:6px"><div class="pf" style="width:${i.stock}%;background:${i.stock<20?'#ff4d6d':i.stock<50?'#ffd166':'#00e5a0'}"></div></div></div>`).join('')}
+    </div></div>
+    <div class="card"><div class="ch"><span class="ct">Halftime Forecast</span><span class="tag ty">8 min</span></div><div class="cb">
+      ${[['Cold Drinks','+340%',820],['Snacks','+280%',640],['Hot Food','+180%',340],['Ice Cream','+120%',290]].map(([i,s,u])=>`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1;font-size:12.5px">${i}</div><div style="font-family:var(--fm);font-size:12px;color:var(--accent3)">${s}</div><div style="font-size:11px;color:var(--dim)">${u}u</div></div>`).join('')}
+      <div style="margin-top:10px;padding:9px;background:rgba(0,229,160,.05);border:1px solid rgba(0,229,160,.14);border-radius:var(--r);font-size:11.5px">✦ <strong>AI:</strong> Pre-positioning 2 cold drink carts at North & South concourse now.</div>
+    </div></div>
+  </div>
+</div>`;
+}
+
+function pgAnalytics(){
+  return `<div class="page-header"><div><div class="page-title">ANALYTICS</div><div class="page-sub">Post-event insights & operational intelligence</div></div><div class="header-actions"><button class="btn ba" onclick="trackEvent('Analytics','generate_report','click')">Generate Report</button></div></div>
+<div class="pb">
+  <div class="g4">${[['Peak Occupancy','96.1%','#00e5a0','↑ +3.2% vs avg'],['Incidents Resolved','100%','#4ea8ff','6 total, 0 major'],['Fan Satisfaction','4.6/5','#ffd166','Top 12%'],['Revenue','₹2.1Cr','#00e5a0','↑ +18% vs last']].map(([l,v,c,s])=>`<div class="mc" style="--ac:${c}"><div class="ml">${l}</div><div class="mv" style="font-size:22px">${v}</div><div class="mch">${s}</div></div>`).join('')}</div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">Event Timeline</span></div><div class="cb"><canvas id="c-ana" style="width:100%;height:100px" aria-label="Event timeline chart"></canvas></div></div>
+    <div class="card"><div class="ch"><span class="ct">AI Insights</span><span class="tag tb">6 found</span></div><div class="cb">
+      ${[['📈','Gate D bottleneck caused 2.3 min delay for 12% of fans.'],['🍔','Samosa sold out 40 min early. Recommend 40% higher stock.'],['⭐','Satisfaction dipped at halftime then recovered after AI routing.'],['💰','Merchandise 22% above forecast.']].map(([ic,t])=>`<div class="ai-item"><span style="font-size:16px;flex-shrink:0">${ic}</span><span style="font-size:12px;line-height:1.5;color:var(--muted)">${t}</span></div>`).join('')}
+    </div></div>
+  </div>
+</div>`;
+}
+
+function pgMap(){
+  return `<div class="page-header"><div><div class="page-title">VENUE MAP</div><div class="page-sub">Google Maps integration · Wankhede Stadium, Mumbai</div></div><div class="header-actions"><span class="tag tg" style="padding:6px 12px">📍 Google Maps</span></div></div>
+<div class="pb">
+  <div class="g2" style="grid-template-columns:1.5fr 1fr">
+    <div class="card">
+      <div class="ch"><span class="ct">Live Location — Wankhede Stadium</span><span class="tag tg">Google Maps</span></div>
+      <div class="cb" style="padding:0">
+        
+        <iframe id="map-fallback" title="Wankhede Stadium on Google Maps" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3773.882!2d72.82358!3d18.93847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ce7341700001%3A0x15bce0a5f065b024!2sWankhede%20Stadium!5e1!3m2!1sen!2sin!4v1713600000000" width="100%" height="400" style="border:0;display:block;border-radius:0 0 14px 14px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ch"><span class="ct">Venue Info</span></div><div class="cb">
+        ${[['📍 Venue','Wankhede Stadium'],['🏙️ City','Mumbai, Maharashtra'],['👥 Capacity','66,000'],['🎟️ Today','63,400 fans'],['📐 Coords','18.9388°N, 72.8258°E'],['🚇 Metro','Churchgate Station'],['🏥 Hospital','KEM — 2.1 km']].map(([l,v])=>`<div class="sr"><div style="color:var(--muted)">${l}</div><div style="font-size:12px">${v}</div></div>`).join('')}
+      </div></div>
+      <div class="card"><div class="ch"><span class="ct">Gate Locations</span></div><div class="cb">
+        ${[['Gate A','North','Open','2.1 min','tg'],['Gate B','South','Open','4.8 min','ty'],['Gate C','VIP West','Open','0.8 min','tg'],['Gate D','East','Crowded','6.2 min','tr']].map(([g,s,st,w,c])=>`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${g.split(' ')[1]}</div><div style="flex:1"><div style="font-size:12.5px;font-weight:500">${g}</div><div style="font-size:11px;color:var(--muted)">${s}</div></div><div style="text-align:right"><span class="tag ${c}">${st}</span><div style="font-size:10px;color:var(--muted);margin-top:2px">${w}</div></div></div>`).join('')}
+      </div></div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── ROUTER ────────────────────────────────────────────────────
+const PAGES = {
+  dashboard:  pgDashboard,
+  crowd:      pgCrowd,
+  queues:     pgQueues,
+  alerts:     pgAlerts,
+  companion:  pgCompanion,
+  concessions:pgConcessions,
+  analytics:  pgAnalytics,
+  map:        pgMap
+};
+
+function go(el, pageId) {
+  ['_di','_qi'].forEach(k=>{ if(window[k]){clearInterval(window[k]);window[k]=null;} });
+  document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('active');n.removeAttribute('aria-current');});
+  if(el){el.classList.add('active');el.setAttribute('aria-current','page');}
+  const main=document.getElementById('main-content');
+  if(!PAGES[pageId]) return;
+  main.innerHTML=PAGES[pageId]();
+  if(typeof trackEvent!=='undefined') trackEvent('Navigation','page_view',pageId);
+  requestAnimationFrame(()=>initPage(pageId));
+}
+
+function initPage(id){
+  if(id==='dashboard'){
+    // heatmap
+    const hm=document.getElementById('hmap');
+    if(hm) hm.innerHTML=DATA.heatmap.map(v=>`<div style="background:${heatColor(v)};border-radius:2px;transition:all .5s"></div>`).join('');
+    // charts
+    setTimeout(()=>{
+      spark(document.getElementById('c-flow'),DATA.flowHistory,'#4ea8ff');
+      spark(document.getElementById('c-occ'),DATA.hourlyOcc,'#00e5a0');
+    },50);
+    // live update
+    window._di=setInterval(()=>{
+      const w=document.getElementById('v-wait');
+      if(w) w.innerHTML=DATA.metrics.avgWait.value.toFixed(1)+'<span style="font-size:14px;opacity:.5"> min</span>';
+    },4000);
+  }
+  if(id==='analytics'){
+    setTimeout(()=>spark(document.getElementById('c-ana'),DATA.hourlyOcc,'#00e5a0'),50);
+  }
+  if(id==='map'){
+    // Try Google Maps JS API first, fallback to iframe
+    setTimeout(()=>{
+      const mc=document.getElementById('google-map-container');
+      const mf=document.getElementById('map-fallback');
+      if(typeof google!=='undefined'&&google.maps&&mc){
+        const map=new google.maps.Map(mc,{center:{lat:18.9388,lng:72.8258},zoom:16,mapTypeId:'satellite'});
+        new google.maps.Marker({position:{lat:18.9388,lng:72.8258},map,title:'Wankhede Stadium'});
+      } else if(mc&&mf){
+        
+        
+      }
+    },500);
+  }
+}
+
+// ── FAN CHAT ──────────────────────────────────────────────────
+function sendFan(){
+  const inp=document.getElementById('fi');
+  const chat=document.getElementById('fan-chat');
+  if(!inp||!chat||!inp.value.trim()) return;
+  const msg=document.createElement('div');
+  msg.style.cssText='background:var(--accent);color:#000;border-radius:9px 3px 9px 9px;padding:7px 10px;font-size:11.5px;margin-bottom:7px;font-weight:500;text-align:right';
+  msg.textContent=inp.value;
+  chat.appendChild(msg);
+  if(typeof trackEvent!=='undefined') trackEvent('FanChat','message_sent',inp.value.substring(0,30));
+  inp.value='';
+  setTimeout(()=>{
+    const rep=document.createElement('div');
+    rep.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:3px 9px 9px 9px;padding:7px 10px;font-size:11.5px;line-height:1.4;margin-bottom:7px';
+    rep.innerHTML='Based on current data: <strong>Food Court 2</strong> (3.1 min wait) is best. Want directions from your seat?';
+    chat.appendChild(rep);
+    chat.scrollTop=chat.scrollHeight;
+  },800);
+}
+
+// Google Maps callback
+function initGoogleMap(){
+  if(document.getElementById('google-map-container')&&typeof google!=='undefined'){
+    const map=new google.maps.Map(document.getElementById('google-map-container'),{center:{lat:18.9388,lng:72.8258},zoom:16,mapTypeId:'satellite'});
+    new google.maps.Marker({position:{lat:18.9388,lng:72.8258},map,title:'Wankhede Stadium'});
+  }
+}
+
+// ── BOOT ──────────────────────────────────────────────────────
+go(document.querySelector('[data-page="dashboard"]'),'dashboard');
+</script>
+
+<!-- Google Maps API -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initGoogleMap"></script>
 </body>
 </html>
-
-
