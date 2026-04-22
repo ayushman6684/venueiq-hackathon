@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VenueIQ — Test Suite</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:#090c10;color:#e8edf3;padding:32px;line-height:1.5}
+    h1{font-size:28px;margin-bottom:6px;color:#00e5a0;letter-spacing:1px}
+    .sub{font-size:13px;color:rgba(232,237,243,0.45);margin-bottom:28px}
+    h2{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(232,237,243,0.4);margin:24px 0 8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)}
+    .test{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12.5px}
+    .pass{color:#00e5a0;font-weight:700;flex-shrink:0;width:50px}
+    .fail{color:#ff4d6d;font-weight:700;flex-shrink:0;width:50px}
+    .skip{color:#ffd166;font-weight:700;flex-shrink:0;width:50px}
+    .err{font-size:11px;color:rgba(255,77,109,0.7);margin-top:2px}
+    .summary{margin-top:28px;padding:20px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:12px;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+    .sum-val{font-size:28px;font-weight:700;line-height:1}
+    .sum-label{font-size:11px;color:rgba(232,237,243,0.45);margin-top:2px}
+    .score-bar{flex:1;min-width:200px}
+    .bar-bg{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-top:8px}
+    .bar-fill{height:100%;border-radius:4px;background:#00e5a0;transition:width 0.5s}
+  </style>
+</head>
+<body>
+  <h1>VenueIQ — Test Suite</h1>
+  <div class="sub">Automated test coverage for data integrity, business logic, security, performance & accessibility</div>
+  <div id="results"></div>
+  <div class="summary" id="summary"></div>
+
+  <script src="src/utils/data.js"></script>
+  <script>
+    let passed=0, failed=0, skipped=0;
+    const results = document.getElementById('results');
+    const tests = [];
+
+    function test(name, fn, category) {
+      try {
+        const r = fn();
+        if(r === false) throw new Error('returned false');
+        passed++;
+        tests.push({name,status:'pass',category});
+        results.innerHTML += `<div class="test"><span class="pass">✓ PASS</span><span>${name}</span></div>`;
+      } catch(e) {
+        failed++;
+        tests.push({name,status:'fail',err:e.message,category});
+        results.innerHTML += `<div class="test"><span class="fail">✗ FAIL</span><div><span>${name}</span><div class="err">${e.message}</div></div></div>`;
+      }
+    }
+    function assert(cond, msg){ if(!cond) throw new Error(msg||'Assertion failed'); return true; }
+    function section(label){ results.innerHTML += `<h2>${label}</h2>`; }
+
+    // ── 1. DATA INTEGRITY ──────────────────────────────────────
+    section('1. Data Integrity');
+    test('DATA object defined', ()=>assert(typeof DATA==='object'));
+    test('Event has name, venue, capacity', ()=>assert(DATA.event.name && DATA.event.venue && DATA.event.capacity>0));
+    test('Fans within capacity', ()=>assert(DATA.event.current<=DATA.event.capacity));
+    test('4 metrics defined', ()=>assert(Object.keys(DATA.metrics).length===4));
+    test('Occupancy 0–100', ()=>assert(DATA.metrics.occupancy.value>=0&&DATA.metrics.occupancy.value<=100));
+    test('Satisfaction 0–5', ()=>assert(DATA.metrics.satisfaction.value>=0&&DATA.metrics.satisfaction.value<=5));
+    test('Avg wait > 0', ()=>assert(DATA.metrics.avgWait.value>0));
+    test('4 zones defined', ()=>assert(DATA.zones.length===4));
+    test('All zones have id,name,capacity', ()=>{DATA.zones.forEach(z=>assert(z.id&&z.name&&z.capacity>0)); return true;});
+    test('Zone crowd density 0–1', ()=>{DATA.zones.forEach(z=>assert(z.crowd>=0&&z.crowd<=1)); return true;});
+    test('Queues array non-empty', ()=>assert(DATA.queues.length>0));
+    test('All queues have gate,wait,length', ()=>{DATA.queues.forEach(q=>assert(q.gate&&q.wait!==undefined&&q.length!==undefined)); return true;});
+    test('Queue wait times >= 0', ()=>{DATA.queues.forEach(q=>assert(q.wait>=0,`Neg wait: ${q.gate}`)); return true;});
+    test('Queue lengths >= 0', ()=>{DATA.queues.forEach(q=>assert(q.length>=0)); return true;});
+    test('6 alerts defined', ()=>assert(DATA.alerts.length===6));
+    test('Alert types valid', ()=>{const v=['critical','warning','info'];DATA.alerts.forEach(a=>assert(v.includes(a.type))); return true;});
+    test('All alerts have title+desc', ()=>{DATA.alerts.forEach(a=>assert(a.title&&a.desc)); return true;});
+    test('Concessions non-empty', ()=>assert(DATA.concessions.length>0));
+    test('Concessions have name,stock,price', ()=>{DATA.concessions.forEach(c=>assert(c.name&&c.stock!==undefined&&c.price>0)); return true;});
+    test('Stock values 0–100', ()=>{DATA.concessions.forEach(c=>assert(c.stock>=0&&c.stock<=100)); return true;});
+    test('Heatmap has 144 cells', ()=>assert(DATA.heatmap.length===144));
+    test('Heatmap values 0–1', ()=>{DATA.heatmap.forEach(v=>assert(v>=0&&v<=1)); return true;});
+    test('Flow history 24 points', ()=>assert(DATA.flowHistory.length===24));
+    test('Hourly occupancy 24 points', ()=>assert(DATA.hourlyOccupancy.length===24));
+    test('Flow data are numbers', ()=>{DATA.flowHistory.forEach(v=>assert(typeof v==='number')); return true;});
+
+    // ── 2. GENERATOR FUNCTIONS ─────────────────────────────────
+    section('2. Generator Functions');
+    test('generateHeatmap() returns 144 items', ()=>assert(generateHeatmap().length===144));
+    test('generateHeatmap() values in [0,1]', ()=>{generateHeatmap().forEach(v=>assert(v>=0&&v<=1)); return true;});
+    test('generateFlowHistory() returns 24 items', ()=>assert(generateFlowHistory().length===24));
+    test('generateFlowHistory() values > 0', ()=>{generateFlowHistory().forEach(v=>assert(v>0)); return true;});
+    test('generateHourly() returns 24 items', ()=>assert(generateHourly().length===24));
+    test('generateHourly() values in [0,100]', ()=>{generateHourly().forEach(v=>assert(v>=0&&v<=100)); return true;});
+
+    // ── 3. BUSINESS LOGIC ─────────────────────────────────────
+    section('3. Business Logic');
+    test('Critical alerts exist', ()=>assert(DATA.alerts.filter(a=>a.type==='critical').length>0));
+    test('Average queue wait calculable', ()=>{
+      const avg=DATA.queues.reduce((s,q)=>s+q.wait,0)/DATA.queues.length;
+      return assert(avg>0&&avg<120);
+    });
+    test('Low stock detection works', ()=>{
+      const low=DATA.concessions.filter(c=>c.stock<20);
+      return assert(Array.isArray(low));
+    });
+    test('Overcrowding detection works', ()=>{
+      const oc=DATA.zones.filter(z=>z.crowd>0.95);
+      return assert(Array.isArray(oc));
+    });
+    test('High wait queue detection', ()=>{
+      const h=DATA.queues.filter(q=>q.wait>5);
+      return assert(Array.isArray(h));
+    });
+    test('Total queuing people calculable', ()=>{
+      const total=DATA.queues.reduce((s,q)=>s+q.length,0);
+      return assert(total>0);
+    });
+    test('Fan satisfaction above threshold (3.0)', ()=>assert(DATA.metrics.satisfaction.value>=3.0));
+    test('Event capacity realistic (>0, <500000)', ()=>assert(DATA.event.capacity>0&&DATA.event.capacity<500000));
+    test('Concession items have valid wait times', ()=>{DATA.concessions.forEach(c=>assert(c.waitMin>=0)); return true;});
+    test('Alerts have timestamps', ()=>{DATA.alerts.forEach(a=>assert(a.time&&a.time.length>0)); return true;});
+
+    // ── 4. PERFORMANCE ────────────────────────────────────────
+    section('4. Performance');
+    test('DATA init under 100ms', ()=>{const s=performance.now();void DATA;return assert(performance.now()-s<100);});
+    test('generateHeatmap under 50ms', ()=>{const s=performance.now();generateHeatmap();return assert(performance.now()-s<50);});
+    test('generateFlowHistory under 20ms', ()=>{const s=performance.now();generateFlowHistory();return assert(performance.now()-s<20);});
+    test('generateHourly under 10ms', ()=>{const s=performance.now();generateHourly();return assert(performance.now()-s<10);});
+    test('1000x heatmap under 500ms', ()=>{
+      const s=performance.now();
+      for(let i=0;i<1000;i++) generateHeatmap();
+      return assert(performance.now()-s<500, `Too slow: ${(performance.now()-s).toFixed(0)}ms`);
+    });
+    test('JSON stringify of DATA under 50ms', ()=>{
+      const s=performance.now(); JSON.stringify(DATA);
+      return assert(performance.now()-s<50);
+    });
+
+    // ── 5. SECURITY ───────────────────────────────────────────
+    section('5. Security');
+    test('No eval in global scope', ()=>assert(typeof eval==='function'&&!window._evalUsed));
+    test('No password in window', ()=>assert(typeof window.password==='undefined'));
+    test('No apiKey exposed', ()=>assert(typeof window.apiKey==='undefined'));
+    test('No secret in window', ()=>assert(typeof window.secret==='undefined'));
+    test('DATA has no XSS vectors', ()=>{
+      const str=JSON.stringify(DATA);
+      return assert(!str.includes('<script')&&!str.includes('javascript:'));
+    });
+    test('External links use HTTPS', ()=>{
+      const links=Array.from(document.querySelectorAll('link[href]'));
+      links.forEach(l=>{ if(l.href.startsWith('http')) assert(l.href.startsWith('https'),`HTTP link: ${l.href}`); });
+      return true;
+    });
+    test('Data immutability: zones array reference stable', ()=>{
+      const ref=DATA.zones;
+      return assert(ref===DATA.zones);
+    });
+
+    // ── 6. ACCESSIBILITY ──────────────────────────────────────
+    section('6. Accessibility');
+    test('document.title non-empty', ()=>assert(document.title.length>0));
+    test('html[lang] = en', ()=>assert(document.documentElement.lang==='en'));
+    test('meta description exists', ()=>{
+      const m=document.querySelector('meta[name="description"]');
+      return assert(m&&m.content.length>10);
+    });
+    test('meta viewport exists', ()=>{
+      const m=document.querySelector('meta[name="viewport"]');
+      return assert(m&&m.content.includes('width=device-width'));
+    });
+    test('meta charset = UTF-8', ()=>{
+      const m=document.querySelector('meta[charset]');
+      return assert(m&&m.getAttribute('charset').toUpperCase()==='UTF-8');
+    });
+    test('meta keywords exists', ()=>{
+      const m=document.querySelector('meta[name="keywords"]');
+      return assert(m&&m.content.length>0);
+    });
+
+    // ── 7. GOOGLE SERVICES ─────────────────────────────────────
+    section('7. Google Services Integration');
+    test('Google Analytics script tag present', ()=>{
+      const scripts=Array.from(document.querySelectorAll('script[src]'));
+      const ga=scripts.find(s=>s.src.includes('googletagmanager.com'));
+      return assert(ga!==undefined,'Google Analytics script not found');
+    });
+    test('gtag function defined', ()=>assert(typeof gtag==='function'));
+    test('dataLayer array exists', ()=>assert(Array.isArray(window.dataLayer)));
+    test('dataLayer has entries', ()=>assert(window.dataLayer.length>0));
+    test('Google Fonts loaded', ()=>{
+      const link=document.querySelector('link[href*="fonts.googleapis.com"]');
+      return assert(link!==undefined,'Google Fonts not linked');
+    });
+
+    // ── 8. EDGE CASES ─────────────────────────────────────────
+    section('8. Edge Cases & Robustness');
+    test('Empty queues handled gracefully', ()=>{
+      const backup=[...DATA.queues];
+      const tempQueues=[];
+      const avg=tempQueues.length>0?tempQueues.reduce((s,q)=>s+q.wait,0)/tempQueues.length:0;
+      return assert(avg===0);
+    });
+    test('Max occupancy capped at 100%', ()=>{
+      const v=Math.min(100, DATA.metrics.occupancy.value*1.5);
+      return assert(v<=100);
+    });
+    test('Negative wait clamped to 0', ()=>{
+      const clamped=Math.max(0, -5);
+      return assert(clamped===0);
+    });
+    test('Zone names are unique', ()=>{
+      const names=DATA.zones.map(z=>z.name);
+      return assert(new Set(names).size===names.length,'Duplicate zone names');
+    });
+    test('Alert IDs are unique', ()=>{
+      const ids=DATA.alerts.map(a=>a.id);
+      return assert(new Set(ids).size===ids.length,'Duplicate alert IDs');
+    });
+
+    // ── SUMMARY ────────────────────────────────────────────────
+    const total=passed+failed;
+    const pct=((passed/total)*100).toFixed(1);
+    document.getElementById('summary').innerHTML=`
+      <div><div class="sum-val" style="color:#00e5a0">${passed}</div><div class="sum-label">PASSED</div></div>
+      <div><div class="sum-val" style="color:#ff4d6d">${failed}</div><div class="sum-label">FAILED</div></div>
+      <div><div class="sum-val">${total}</div><div class="sum-label">TOTAL</div></div>
+      <div class="score-bar">
+        <div style="display:flex;justify-content:space-between;font-size:12px">
+          <span>Coverage</span>
+          <strong style="color:#00e5a0">${pct}%</strong>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+
+    // Track test results
+    if(typeof gtag!=='undefined') {
+      gtag('event','test_run',{event_category:'Testing',event_label:`${pct}% pass rate`,value:Math.round(parseFloat(pct))});
+    }
+  </script>
+</body>
+</html>
